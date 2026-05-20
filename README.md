@@ -86,9 +86,15 @@ Active un compte après inscription (set password).
 
 ## Démarrage
 
+1. Créer la base MySQL :
+```sql
+CREATE DATABASE soutenance_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+2. Lancer le backend :
 ```bash
-cd api
+cd soutenance-backend
 ./mvnw spring-boot:run
 ```
 
-H2 console: http://localhost:8080/h2-console (JDBC URL: `jdbc:h2:mem:defensedb`)
+H2 console (si activé): http://localhost:8080/h2-console (JDBC URL: `jdbc:h2:mem:defensedb`)
