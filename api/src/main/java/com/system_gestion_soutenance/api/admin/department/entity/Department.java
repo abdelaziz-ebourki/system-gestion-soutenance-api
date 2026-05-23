@@ -1,5 +1,6 @@
 package com.system_gestion_soutenance.api.admin.department.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.system_gestion_soutenance.api.user.entity.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -18,5 +19,6 @@ public class Department {
     private String code;
     @ManyToOne
     @JoinColumn(name = "head_id")
+    @JsonIgnoreProperties("department")
     private Teacher head;
 }

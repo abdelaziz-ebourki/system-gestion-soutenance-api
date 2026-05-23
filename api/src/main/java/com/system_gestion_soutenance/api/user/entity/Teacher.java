@@ -1,5 +1,6 @@
 package com.system_gestion_soutenance.api.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.system_gestion_soutenance.api.admin.config.grade.entity.Grade;
 import com.system_gestion_soutenance.api.admin.department.entity.Department;
 import jakarta.persistence.*;
@@ -19,5 +20,6 @@ public class Teacher extends User {
     private Grade grade;
     @ManyToOne
     @JoinColumn(name = "department_id")
+    @JsonIgnoreProperties("head")
     private Department department;
 }
