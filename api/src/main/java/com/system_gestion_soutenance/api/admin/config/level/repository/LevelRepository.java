@@ -1,0 +1,10 @@
+package com.system_gestion_soutenance.api.admin.config.level.repository;
+
+import com.system_gestion_soutenance.api.admin.config.level.entity.Level;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
+
+public interface LevelRepository extends JpaRepository<Level, String> {
+    Optional<Level> findByName(String name);
+}
