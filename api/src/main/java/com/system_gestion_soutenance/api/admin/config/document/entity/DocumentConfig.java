@@ -1,0 +1,29 @@
+package com.system_gestion_soutenance.api.admin.config.document.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "document_config")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class DocumentConfig {
+
+    @Id
+    private String id = "default";
+
+    @Column(name = "max_file_size_mb")
+    private int maxFileSizeMb;
+
+    @Column(name = "allowed_extensions")
+    private String allowedExtensions;
+
+    @Column(name = "version_limit")
+    private int versionLimit;
+}

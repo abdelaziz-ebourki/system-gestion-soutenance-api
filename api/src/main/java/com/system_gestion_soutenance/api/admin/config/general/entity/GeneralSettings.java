@@ -1,0 +1,31 @@
+package com.system_gestion_soutenance.api.admin.config.general.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "general_settings")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class GeneralSettings {
+
+    @Id
+    private String id = "default";
+
+    @Column(name = "institution_name")
+    private String institutionName;
+
+    @Column(name = "institution_logo_url")
+    private String institutionLogoUrl;
+
+    private String timezone;
+
+    @Column(name = "date_format")
+    private String dateFormat;
+}

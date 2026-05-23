@@ -1,0 +1,37 @@
+package com.system_gestion_soutenance.api.admin.audit.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "audit_log")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AuditLog {
+
+    @Id
+    private String id;
+
+    @Column(nullable = false)
+    private String action;
+
+    @Column(nullable = false)
+    private String entity;
+
+    @Column(name = "entity_id")
+    private String entityId;
+
+    @Column(name = "admin_email")
+    private String adminEmail;
+
+    @Column(columnDefinition = "TEXT")
+    private String details;
+
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
+}
