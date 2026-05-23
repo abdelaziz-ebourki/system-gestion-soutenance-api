@@ -1,0 +1,83 @@
+package com.system_gestion_soutenance.api.coordinator.group.service;
+
+import com.system_gestion_soutenance.api.coordinator.group.dto.CreateGroupRequest;
+import com.system_gestion_soutenance.api.coordinator.group.entity.Group;
+import com.system_gestion_soutenance.api.coordinator.group.repository.GroupRepository;
+import com.system_gestion_soutenance.api.coordinator.project.entity.Project;
+import com.system_gestion_soutenance.api.coordinator.project.repository.ProjectRepository;
+import com.system_gestion_soutenance.api.user.entity.Student;
+import com.system_gestion_soutenance.api.user.repository.StudentRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Service
+public class GroupService {
+
+    private final GroupRepository groupRepository;
+    private final ProjectRepository projectRepository;
+    private final StudentRepository studentRepository;
+
+    public GroupService(GroupRepository groupRepository,
+                        ProjectRepository projectRepository,
+                        StudentRepository studentRepository) {
+        this.groupRepository = groupRepository;
+        this.projectRepository = projectRepository;
+        this.studentRepository = studentRepository;
+    }
+
+    public List<Map<String, Object>> findAll() {
+        return groupRepository.findAll().stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    public Map<String, Object> create(CreateGroupRequest request) {
+        Project project = projectRepository.findById(request.projectId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Projet introuvable"));
+
+        List<Student> students = Collections.emptyList();
+        if (request.studentIds() != null) {
+            students = studentRepository.findAllById(request.studentIds());
+        }
+
+        Group group = new Group();
+        group.setId(UUID.randomUUID().toString());
+        group.setProject(project);
+        group.setStudents(students);
+        group.setSessionId(request.sessionId());
+
+        return toResponse(groupRepository.save(group));
+    }
+
+    public void delete(String id) {
+        if (!groupRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Groupe non trouvé");
+        }
+        groupRepository.deleteById(id);
+    }
+
+    private Map<String, Object> toResponse(Group group) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("id", group.getId());
+        map.put("projectId", group.getProject().getId());
+        map.put("projectTitle", group.getProject().getTitle());
+
+        List<String> studentIds = group.getStudents() != null
+                ? group.getStudents().stream().map(Student::getId).collect(Collectors.toList())
+                : List.of();
+        List<String> studentNames = group.getStudents() != null
+                ? group.getStudents().stream()
+                    .map(s -> s.getFirstName() + " " + s.getLastName())
+                    .collect(Collectors.toList())
+                : List.of();
+        map.put("studentIds", studentIds);
+        map.put("studentNames", studentNames);
+        map.put("sessionId", group.getSessionId());
+        return map;
+    }
+}

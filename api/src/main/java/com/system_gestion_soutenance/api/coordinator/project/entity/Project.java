@@ -1,0 +1,43 @@
+package com.system_gestion_soutenance.api.coordinator.project.entity;
+
+import com.system_gestion_soutenance.api.user.entity.Student;
+import com.system_gestion_soutenance.api.user.entity.Teacher;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Entity
+@Table(name = "project")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Project {
+
+    @Id
+    private String id;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Column(name = "defense_type", nullable = false)
+    private String defenseType;
+
+    @Column(nullable = false)
+    private String status = "pending";
+
+    @ManyToOne
+    @JoinColumn(name = "supervisor_id")
+    private Teacher supervisor;
+
+    @ManyToMany
+    @JoinTable(name = "project_students",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id"))
+    private List<Student> students;
+}

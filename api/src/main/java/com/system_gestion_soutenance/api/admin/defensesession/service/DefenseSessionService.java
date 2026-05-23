@@ -128,6 +128,17 @@ public class DefenseSessionService {
         defenseSessionRepository.deleteById(id);
     }
 
+    public DefenseSession transition(String id, String toStatus) {
+        DefenseSession ds = defenseSessionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Session de soutenance non trouvée"));
+
+        DefenseSessionStatus newStatus = parseStatus(toStatus);
+        validateTransition(ds.getStatus(), newStatus);
+        ds.setStatus(newStatus);
+        return defenseSessionRepository.save(ds);
+    }
+
     private void validateTransition(DefenseSessionStatus from, DefenseSessionStatus to) {
         if (from == to) return;
         Set<DefenseSessionStatus> allowed = VALID_TRANSITIONS.get(from);
