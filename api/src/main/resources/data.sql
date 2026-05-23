@@ -46,6 +46,15 @@ UPDATE department SET head_id = '3' WHERE id = '3';
 -- Demo student (subclass table)
 INSERT INTO student (id, cne, major_id, level_id) VALUES ('std-demo', 'E13000999', 'm1', 'n2');
 
+-- Sessions
+INSERT INTO global_session (id, name, type, status, start_date, end_date) VALUES ('s1', 'Session Printemps 2026', 'NORMALE', 'ACTIVE', '2026-02-01', '2026-07-15');
+
+-- Jury Role Templates
+INSERT INTO jury_role_template (id, name) VALUES ('jrt1', 'Template standard');
+
+-- Defense Sessions
+INSERT INTO defense_session (id, name, defense_type, status, max_group_size, defense_duration, break_duration, submission_deadline, coeff_president, coeff_reporter, coeff_examiner, global_session_id, jury_role_template_id, start_date, end_date) VALUES ('ds1', 'Soutenance PFE 2026', 'PFE', 'DRAFT', 3, 30, 10, '2026-06-01', 0.4, 0.3, 0.3, 's1', 'jrt1', '2026-06-15', '2026-07-10');
+
 -- ============================================================
 -- 50 generated students (std-1 to std-50)
 -- Names cycle through 20 firstNames + 20 lastNames
