@@ -25,6 +25,9 @@ public class SlotAssignment {
     @Column(nullable = false)
     private String time;
 
+    @Column(name = "project_id")
+    private String projectId;
+
     @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;

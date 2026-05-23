@@ -45,6 +45,9 @@ public class ScheduleService {
             slot.setDate((String) data.get("date"));
             slot.setTime((String) data.get("time"));
 
+            if (data.containsKey("projectId") && data.get("projectId") != null)
+                slot.setProjectId((String) data.get("projectId"));
+
             if (data.containsKey("roomId") && data.get("roomId") != null) {
                 Room room = roomRepository.findById((String) data.get("roomId"))
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -64,6 +67,7 @@ public class ScheduleService {
         map.put("title", slot.getTitle());
         map.put("date", slot.getDate());
         map.put("time", slot.getTime());
+        map.put("projectId", slot.getProjectId());
         map.put("roomId", slot.getRoom() != null ? slot.getRoom().getId() : null);
         return map;
     }
