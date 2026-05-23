@@ -1,0 +1,39 @@
+package com.system_gestion_soutenance.api.notification.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "notification")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AppNotification {
+
+    @Id
+    private String id;
+
+    @Column(nullable = false)
+    private String type;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String message;
+
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
+
+    @Column(nullable = false)
+    private boolean read;
+
+    @Column(name = "action_link")
+    private String actionLink;
+
+    private String actor;
+}

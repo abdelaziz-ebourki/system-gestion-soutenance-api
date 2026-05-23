@@ -47,6 +47,7 @@ public class GroupService {
 
         Group group = new Group();
         group.setId(UUID.randomUUID().toString());
+        group.setGroupName(request.groupName());
         group.setProject(project);
         group.setStudents(students);
         group.setSessionId(request.sessionId());
@@ -64,8 +65,9 @@ public class GroupService {
     private Map<String, Object> toResponse(Group group) {
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("id", group.getId());
-        map.put("projectId", group.getProject().getId());
-        map.put("projectTitle", group.getProject().getTitle());
+        map.put("groupName", group.getGroupName());
+        map.put("projectId", group.getProject() != null ? group.getProject().getId() : null);
+        map.put("projectTitle", group.getProject() != null ? group.getProject().getTitle() : null);
 
         List<String> studentIds = group.getStudents() != null
                 ? group.getStudents().stream().map(Student::getId).collect(Collectors.toList())

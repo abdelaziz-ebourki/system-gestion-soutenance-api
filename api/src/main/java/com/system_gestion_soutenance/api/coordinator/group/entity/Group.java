@@ -19,8 +19,11 @@ public class Group {
     @Id
     private String id;
 
+    @Column(name = "group_name")
+    private String groupName;
+
     @ManyToOne
-    @JoinColumn(name = "project_id", nullable = false)
+    @JoinColumn(name = "project_id")
     private Project project;
 
     @ManyToMany

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
 public record CreateGroupRequest(
+        String groupName,
         @NotBlank String projectId,
         List<String> studentIds,
         String sessionId
