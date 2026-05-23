@@ -1,0 +1,24 @@
+package com.system_gestion_soutenance.api.user.entity;
+
+import com.system_gestion_soutenance.api.admin.config.major.entity.Major;
+import com.system_gestion_soutenance.api.admin.config.level.entity.Level;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@Entity
+@DiscriminatorValue("STUDENT")
+@PrimaryKeyJoinColumn(name = "id")
+@Data
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
+public class Student extends User {
+    private String cne;
+    @ManyToOne
+    @JoinColumn(name = "major_id")
+    private Major major;
+    @ManyToOne
+    @JoinColumn(name = "level_id")
+    private Level level;
+}

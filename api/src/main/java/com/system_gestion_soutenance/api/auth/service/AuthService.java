@@ -1,0 +1,59 @@
+package com.system_gestion_soutenance.api.auth.service;
+
+import com.system_gestion_soutenance.api.auth.dto.LoginRequest;
+import com.system_gestion_soutenance.api.auth.dto.LoginResponse;
+import com.system_gestion_soutenance.api.auth.dto.VerifyRequest;
+import com.system_gestion_soutenance.api.auth.jwt.JwtTokenProvider;
+import com.system_gestion_soutenance.api.user.dto.UserDto;
+import com.system_gestion_soutenance.api.user.entity.User;
+import com.system_gestion_soutenance.api.user.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+@Service
+public class AuthService {
+
+    private final UserRepository userRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public LoginResponse login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                        "Identifiants invalides (E-mail ou mot de passe incorrect)"));
+
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "Identifiants invalides (E-mail ou mot de passe incorrect)");
+        }
+
+        if (!user.isActive()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "Veuillez activer votre compte via le lien de vérification envoyé à votre adresse email.");
+        }
+
+        String token = jwtTokenProvider.generateToken(user.getId(), user.getRole().name());
+        long expiresAt = System.currentTimeMillis() + jwtTokenProvider.getExpirationMs();
+
+        return new LoginResponse(UserDto.from(user), token, expiresAt);
+    }
+
+    public void verifyAccount(VerifyRequest request) {
+        User user = userRepository.findByVerificationToken(request.token())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Token de vérification invalide ou déjà utilisé"));
+
+        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setActive(true);
+        user.setVerificationToken(null);
+        userRepository.save(user);
+    }
+}
