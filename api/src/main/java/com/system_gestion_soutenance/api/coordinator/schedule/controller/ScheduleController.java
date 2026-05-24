@@ -2,6 +2,8 @@ package com.system_gestion_soutenance.api.coordinator.schedule.controller;
 
 import com.system_gestion_soutenance.api.coordinator.conflict.service.ConflictDetectionService;
 import com.system_gestion_soutenance.api.coordinator.schedule.service.ScheduleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/coordinator/schedule")
+@Tag(name = "Coordinator - Schedule", description = "Gestion du planning des soutenances")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -24,12 +27,14 @@ public class ScheduleController {
     }
 
     @GetMapping
+    @Operation(summary = "Get the current schedule")
     public Map<String, Map<String, Object>> get() {
         return scheduleService.getSchedule();
     }
 
     @SuppressWarnings("unchecked")
     @PostMapping
+    @Operation(summary = "Save schedule with conflict validation")
     public ResponseEntity<?> save(@RequestBody Map<String, Object> body) {
         Object raw = body.get("schedule");
         if (raw == null) {
@@ -51,6 +56,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/auto-generate")
+    @Operation(summary = "Auto-generate a proposed schedule")
     public ResponseEntity<Map<String, Object>> autoGenerate(@RequestBody Map<String, String> body) {
         String defenseSessionId = body.get("defenseSessionId");
         if (defenseSessionId == null) {
@@ -62,6 +68,7 @@ public class ScheduleController {
     }
 
     @PostMapping("/publish")
+    @Operation(summary = "Publish the schedule")
     public ResponseEntity<Map<String, String>> publish(@RequestBody Map<String, String> body) {
         String defenseSessionId = body.get("defenseSessionId");
         if (defenseSessionId == null) {

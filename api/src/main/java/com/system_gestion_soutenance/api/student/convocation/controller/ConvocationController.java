@@ -2,6 +2,8 @@ package com.system_gestion_soutenance.api.student.convocation.controller;
 
 import com.system_gestion_soutenance.api.student.defense.service.StudentDefenseService;
 import com.system_gestion_soutenance.api.user.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/student/convocation")
+@Tag(name = "Student - Convocation", description = "Génération de la convocation PDF")
 public class ConvocationController {
 
     private final StudentDefenseService studentDefenseService;
@@ -25,6 +28,7 @@ public class ConvocationController {
     }
 
     @GetMapping
+    @Operation(summary = "Get the convocation PDF for the connected student")
     public ResponseEntity<byte[]> getConvocation() {
         String studentId = getCurrentUserId();
 

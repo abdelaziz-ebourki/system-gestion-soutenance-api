@@ -2,6 +2,8 @@ package com.system_gestion_soutenance.api.teacher.stats.controller;
 
 import com.system_gestion_soutenance.api.teacher.stats.service.TeacherStatsService;
 import com.system_gestion_soutenance.api.user.entity.User;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/teacher/stats")
+@Tag(name = "Teacher - Stats", description = "Statistiques personnelles de l'enseignant")
 public class TeacherStatsController {
 
     private final TeacherStatsService statsService;
@@ -18,6 +21,7 @@ public class TeacherStatsController {
     }
 
     @GetMapping
+    @Operation(summary = "Get personal statistics for the connected teacher")
     public Map<String, Object> getStats() {
         return statsService.getStats(getCurrentUserId());
     }

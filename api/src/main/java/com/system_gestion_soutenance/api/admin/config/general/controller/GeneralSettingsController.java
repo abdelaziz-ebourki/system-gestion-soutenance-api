@@ -2,12 +2,15 @@ package com.system_gestion_soutenance.api.admin.config.general.controller;
 
 import com.system_gestion_soutenance.api.admin.config.general.entity.GeneralSettings;
 import com.system_gestion_soutenance.api.admin.config.general.service.GeneralSettingsService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/config/general")
+@Tag(name = "Admin - General Settings", description = "Paramètres généraux")
 public class GeneralSettingsController {
 
     private final GeneralSettingsService service;
@@ -17,11 +20,13 @@ public class GeneralSettingsController {
     }
 
     @GetMapping
+    @Operation(summary = "Get general settings")
     public GeneralSettings get() {
         return service.get();
     }
 
     @PutMapping
+    @Operation(summary = "Update general settings")
     public GeneralSettings update(@RequestBody Map<String, Object> updates) {
         return service.update(updates);
     }
