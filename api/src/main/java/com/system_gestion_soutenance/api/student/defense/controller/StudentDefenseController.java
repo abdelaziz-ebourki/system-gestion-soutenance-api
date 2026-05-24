@@ -1,6 +1,8 @@
 package com.system_gestion_soutenance.api.student.defense.controller;
 
 import com.system_gestion_soutenance.api.student.defense.service.StudentDefenseService;
+import com.system_gestion_soutenance.api.user.entity.User;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -16,7 +18,11 @@ public class StudentDefenseController {
     }
 
     @GetMapping
-    public Map<String, Object> getDefense(@RequestParam(defaultValue = "std-demo") String studentId) {
-        return studentDefenseService.getDefense(studentId);
+    public Map<String, Object> getDefense() {
+        return studentDefenseService.getDefense(getCurrentUserId());
+    }
+
+    private String getCurrentUserId() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

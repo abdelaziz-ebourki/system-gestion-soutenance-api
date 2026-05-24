@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface DepartmentRepository extends JpaRepository<Department, String> {
     Optional<Department> findByName(String name);
-    List<Department> findByHeadId(String headId);
+    List<Department> findByHead_Id(String headId);
 }

@@ -5,6 +5,7 @@ import com.system_gestion_soutenance.api.coordinator.jury.repository.JuryReposit
 import com.system_gestion_soutenance.api.coordinator.project.dto.CreateProjectRequest;
 import com.system_gestion_soutenance.api.coordinator.project.entity.Project;
 import com.system_gestion_soutenance.api.coordinator.project.repository.ProjectRepository;
+import com.system_gestion_soutenance.api.coordinator.schedule.repository.SlotAssignmentRepository;
 import com.system_gestion_soutenance.api.user.entity.Student;
 import com.system_gestion_soutenance.api.user.entity.Teacher;
 import com.system_gestion_soutenance.api.user.repository.StudentRepository;
@@ -24,17 +25,20 @@ public class ProjectService {
     private final StudentRepository studentRepository;
     private final GroupRepository groupRepository;
     private final JuryRepository juryRepository;
+    private final SlotAssignmentRepository slotAssignmentRepository;
 
     public ProjectService(ProjectRepository projectRepository,
                            TeacherRepository teacherRepository,
                            StudentRepository studentRepository,
                            GroupRepository groupRepository,
-                           JuryRepository juryRepository) {
+                           JuryRepository juryRepository,
+                           SlotAssignmentRepository slotAssignmentRepository) {
         this.projectRepository = projectRepository;
         this.teacherRepository = teacherRepository;
         this.studentRepository = studentRepository;
         this.groupRepository = groupRepository;
         this.juryRepository = juryRepository;
+        this.slotAssignmentRepository = slotAssignmentRepository;
     }
 
     public List<Map<String, Object>> findAll() {
@@ -104,6 +108,10 @@ public class ProjectService {
         if (!groupRepository.findByProjectId(id).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Impossible de supprimer ce projet car des groupes y sont rattachés");
+        }
+        if (slotAssignmentRepository.findAll().stream().anyMatch(s -> project.getId().equals(s.getProjectId()))) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Impossible de supprimer ce projet car des soutenances sont planifiées");
         }
 
         projectRepository.delete(project);

@@ -1,12 +1,10 @@
 package com.system_gestion_soutenance.api.admin.defensesession.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.system_gestion_soutenance.api.admin.config.juryrole.entity.JuryRoleTemplate;
 import com.system_gestion_soutenance.api.admin.session.entity.Session;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -22,7 +20,7 @@ public class DefenseSession {
 
     @ManyToOne
     @JoinColumn(name = "global_session_id", nullable = false)
-    @JsonIgnoreProperties("head")
+    @JsonIgnore
     private Session globalSession;
 
     @Column(nullable = false)
@@ -58,7 +56,7 @@ public class DefenseSession {
 
     @ManyToOne
     @JoinColumn(name = "jury_role_template_id")
-    @JsonIgnoreProperties("head")
+    @JsonIgnore
     private JuryRoleTemplate juryRoleTemplate;
 
     @Column(name = "start_date", nullable = false)
@@ -66,4 +64,12 @@ public class DefenseSession {
 
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
+
+    public String getGlobalSessionId() {
+        return globalSession != null ? globalSession.getId() : null;
+    }
+
+    public String getJuryRoleTemplateId() {
+        return juryRoleTemplate != null ? juryRoleTemplate.getId() : null;
+    }
 }

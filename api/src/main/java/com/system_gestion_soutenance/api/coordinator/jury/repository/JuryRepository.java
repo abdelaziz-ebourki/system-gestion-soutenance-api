@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface JuryRepository extends JpaRepository<Jury, String> {
     List<Jury> findByProjectId(String projectId);
+    List<Jury> findByPresidentId(String presidentId);
+    List<Jury> findByReporterId(String reporterId);
+    List<Jury> findByExaminerId(String examinerId);
 }

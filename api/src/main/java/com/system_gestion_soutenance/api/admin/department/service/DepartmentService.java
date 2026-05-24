@@ -3,6 +3,7 @@ package com.system_gestion_soutenance.api.admin.department.service;
 import com.system_gestion_soutenance.api.admin.department.dto.CreateDepartmentRequest;
 import com.system_gestion_soutenance.api.admin.department.entity.Department;
 import com.system_gestion_soutenance.api.admin.department.repository.DepartmentRepository;
+import com.system_gestion_soutenance.api.admin.room.repository.RoomRepository;
 import com.system_gestion_soutenance.api.user.entity.Teacher;
 import com.system_gestion_soutenance.api.user.repository.TeacherRepository;
 import org.springframework.http.HttpStatus;
@@ -17,10 +18,14 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
     private final TeacherRepository teacherRepository;
+    private final RoomRepository roomRepository;
 
-    public DepartmentService(DepartmentRepository departmentRepository, TeacherRepository teacherRepository) {
+    public DepartmentService(DepartmentRepository departmentRepository,
+                              TeacherRepository teacherRepository,
+                              RoomRepository roomRepository) {
         this.departmentRepository = departmentRepository;
         this.teacherRepository = teacherRepository;
+        this.roomRepository = roomRepository;
     }
 
     public List<Department> findAll() {
@@ -79,14 +84,14 @@ public class DepartmentService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Département non trouvé"));
 
-        List<Department> deps = departmentRepository.findAll();
-        long teacherCount = deps.stream()
-                .filter(d -> d.getHead() != null && d.getHead().getId().equals(id))
-                .count();
-
-        if (teacherCount > 0) {
+        if (!teacherRepository.findByDepartmentId(id).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Impossible de supprimer ce département car des enseignants y sont rattachés");
+        }
+
+        if (!roomRepository.findByDepartment_Id(id).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Impossible de supprimer ce département car des salles y sont rattachées");
         }
 
         departmentRepository.delete(department);

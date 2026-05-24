@@ -9,6 +9,8 @@ import com.system_gestion_soutenance.api.admin.config.major.repository.MajorRepo
 import com.system_gestion_soutenance.api.admin.department.entity.Department;
 import com.system_gestion_soutenance.api.admin.department.repository.DepartmentRepository;
 import com.system_gestion_soutenance.api.common.dto.PaginatedResponse;
+import com.system_gestion_soutenance.api.coordinator.jury.repository.JuryRepository;
+import com.system_gestion_soutenance.api.coordinator.project.repository.ProjectRepository;
 import com.system_gestion_soutenance.api.user.dto.BulkCreateRequest;
 import com.system_gestion_soutenance.api.user.dto.CreateUserRequest;
 import com.system_gestion_soutenance.api.user.dto.UpdateUserRequest;
@@ -36,6 +38,8 @@ public class UserService {
     private final LevelRepository levelRepository;
     private final GradeRepository gradeRepository;
     private final DepartmentRepository departmentRepository;
+    private final JuryRepository juryRepository;
+    private final ProjectRepository projectRepository;
 
     public UserService(UserRepository userRepository,
                        StudentRepository studentRepository,
@@ -44,7 +48,9 @@ public class UserService {
                        MajorRepository majorRepository,
                        LevelRepository levelRepository,
                        GradeRepository gradeRepository,
-                       DepartmentRepository departmentRepository) {
+                       DepartmentRepository departmentRepository,
+                       JuryRepository juryRepository,
+                       ProjectRepository projectRepository) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
@@ -53,6 +59,8 @@ public class UserService {
         this.levelRepository = levelRepository;
         this.gradeRepository = gradeRepository;
         this.departmentRepository = departmentRepository;
+        this.juryRepository = juryRepository;
+        this.projectRepository = projectRepository;
     }
 
     public PaginatedResponse<UserDto> listUsers(String role, int page, int limit) {
@@ -196,10 +204,27 @@ public class UserService {
                         "Utilisateur non trouvé"));
 
         if (user instanceof Teacher) {
-            List<Department> headedDepts = departmentRepository.findByHeadId(id);
+            List<Department> headedDepts = departmentRepository.findByHead_Id(id);
             if (!headedDepts.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "Impossible de supprimer cet enseignant car il est responsable de département(s)");
+            }
+            if (!juryRepository.findByPresidentId(id).isEmpty()
+                    || !juryRepository.findByReporterId(id).isEmpty()
+                    || !juryRepository.findByExaminerId(id).isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Impossible de supprimer cet enseignant car il est membre d'un jury");
+            }
+            if (!projectRepository.findBySupervisorId(id).isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Impossible de supprimer cet enseignant car il encadre des projets");
+            }
+        }
+
+        if (user instanceof Student) {
+            if (!projectRepository.findByStudentsId(id).isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT,
+                        "Impossible de supprimer cet étudiant car il est lié à des projets");
             }
         }
 

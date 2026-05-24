@@ -1,11 +1,9 @@
 package com.system_gestion_soutenance.api.admin.room.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.system_gestion_soutenance.api.admin.department.entity.Department;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "room")
@@ -19,6 +17,10 @@ public class Room {
     private int capacity;
     @ManyToOne
     @JoinColumn(name = "department_id")
-    @JsonIgnoreProperties("head")
+    @JsonIgnore
     private Department department;
+
+    public String getDepartmentId() {
+        return department != null ? department.getId() : null;
+    }
 }

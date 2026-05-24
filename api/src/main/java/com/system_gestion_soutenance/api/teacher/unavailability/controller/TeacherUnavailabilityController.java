@@ -1,6 +1,8 @@
 package com.system_gestion_soutenance.api.teacher.unavailability.controller;
 
 import com.system_gestion_soutenance.api.teacher.unavailability.service.TeacherUnavailabilityService;
+import com.system_gestion_soutenance.api.user.entity.User;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,20 +19,23 @@ public class TeacherUnavailabilityController {
     }
 
     @GetMapping
-    public Map<String, Object> get(@RequestParam(defaultValue = "3") String teacherId) {
-        return service.getByTeacher(teacherId);
+    public Map<String, Object> get() {
+        return service.getByTeacher(getCurrentUserId());
     }
 
     @SuppressWarnings("unchecked")
     @PostMapping
-    public Map<String, Object> save(@RequestParam(defaultValue = "3") String teacherId,
-                                     @RequestBody Map<String, Object> body) {
+    public Map<String, Object> save(@RequestBody Map<String, Object> body) {
         Map<String, List<String>> slotsByDate;
         if (body.get("slotsByDate") != null) {
             slotsByDate = (Map<String, List<String>>) body.get("slotsByDate");
         } else {
             slotsByDate = (Map<String, List<String>>) (Map) body;
         }
-        return service.saveForTeacher(teacherId, slotsByDate);
+        return service.saveForTeacher(getCurrentUserId(), slotsByDate);
+    }
+
+    private String getCurrentUserId() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

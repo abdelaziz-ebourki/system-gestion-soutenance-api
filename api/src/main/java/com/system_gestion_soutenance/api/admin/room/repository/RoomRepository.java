@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, String> {
-    List<Room> findByDepartmentId(String departmentId);
+    List<Room> findByDepartment_Id(String departmentId);
 }

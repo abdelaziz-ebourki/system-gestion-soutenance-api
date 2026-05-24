@@ -8,6 +8,7 @@ import com.system_gestion_soutenance.api.coordinator.project.entity.Project;
 import com.system_gestion_soutenance.api.coordinator.project.repository.ProjectRepository;
 import com.system_gestion_soutenance.api.coordinator.schedule.entity.SlotAssignment;
 import com.system_gestion_soutenance.api.coordinator.schedule.repository.SlotAssignmentRepository;
+import com.system_gestion_soutenance.api.user.entity.Teacher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -50,9 +51,9 @@ public class StudentDefenseService {
 
         List<Map<String, String>> juryMembers = new ArrayList<>();
         for (Jury jury : juryRepository.findByProjectId(project.getId())) {
-            addJuryMember(juryMembers, jury, "Président", jury.getPresident());
-            addJuryMember(juryMembers, jury, "Rapporteur", jury.getReporter());
-            addJuryMember(juryMembers, jury, "Examinateur", jury.getExaminer());
+            addJuryMember(juryMembers, "Président", jury.getPresident());
+            addJuryMember(juryMembers, "Rapporteur", jury.getReporter());
+            addJuryMember(juryMembers, "Examinateur", jury.getExaminer());
         }
         defense.put("juryMembers", juryMembers);
 
@@ -89,21 +90,12 @@ public class StudentDefenseService {
         return null;
     }
 
-    private void addJuryMember(List<Map<String, String>> members, Jury jury, String role, Object teacher) {
+    private void addJuryMember(List<Map<String, String>> members, String role, Teacher teacher) {
         if (teacher != null) {
             Map<String, String> m = new LinkedHashMap<>();
-            try {
-                var t = jury.getClass().getMethod(role.equals("Président") ? "getPresident"
-                        : role.equals("Rapporteur") ? "getReporter" : "getExaminer").invoke(jury);
-                if (t != null) {
-                    m.put("name", t.getClass().getMethod("getFirstName").invoke(t) + " "
-                            + t.getClass().getMethod("getLastName").invoke(t));
-                    m.put("role", role);
-                    members.add(m);
-                }
-            } catch (Exception e) {
-                // skip
-            }
+            m.put("name", teacher.getFirstName() + " " + teacher.getLastName());
+            m.put("role", role);
+            members.add(m);
         }
     }
 }

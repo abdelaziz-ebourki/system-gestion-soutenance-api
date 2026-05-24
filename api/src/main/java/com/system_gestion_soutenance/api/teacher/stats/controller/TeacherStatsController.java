@@ -1,6 +1,8 @@
 package com.system_gestion_soutenance.api.teacher.stats.controller;
 
 import com.system_gestion_soutenance.api.teacher.stats.service.TeacherStatsService;
+import com.system_gestion_soutenance.api.user.entity.User;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -16,7 +18,11 @@ public class TeacherStatsController {
     }
 
     @GetMapping
-    public Map<String, Object> getStats(@RequestParam(defaultValue = "3") String teacherId) {
-        return statsService.getStats(teacherId);
+    public Map<String, Object> getStats() {
+        return statsService.getStats(getCurrentUserId());
+    }
+
+    private String getCurrentUserId() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

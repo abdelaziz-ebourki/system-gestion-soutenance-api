@@ -1,14 +1,15 @@
 package com.system_gestion_soutenance.api.admin.audit.controller;
 
+import com.system_gestion_soutenance.api.admin.audit.dto.AuditLogRequest;
 import com.system_gestion_soutenance.api.admin.audit.entity.AuditLog;
 import com.system_gestion_soutenance.api.admin.audit.repository.AuditLogRepository;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -27,14 +28,14 @@ public class AuditLogController {
     }
 
     @PostMapping
-    public ResponseEntity<AuditLog> create(@RequestBody Map<String, String> body) {
+    public ResponseEntity<AuditLog> create(@Valid @RequestBody AuditLogRequest request) {
         AuditLog log = new AuditLog();
         log.setId(UUID.randomUUID().toString());
-        log.setAction(body.get("action"));
-        log.setEntity(body.get("entity"));
-        log.setEntityId(body.get("entityId"));
-        log.setAdminEmail(body.get("adminEmail"));
-        log.setDetails(body.get("details"));
+        log.setAction(request.action());
+        log.setEntity(request.entity());
+        log.setEntityId(request.entityId());
+        log.setAdminEmail(request.adminEmail());
+        log.setDetails(request.details());
         log.setTimestamp(LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(log));
     }

@@ -53,7 +53,7 @@ public class JuryRoleTemplateService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Template de rôle jury non trouvé"));
 
-        if (!defenseSessionRepository.findByJuryRoleTemplateId(id).isEmpty()) {
+        if (!defenseSessionRepository.findByJuryRoleTemplate_Id(id).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Impossible de supprimer ce template car des sessions de soutenance l'utilisent");
         }

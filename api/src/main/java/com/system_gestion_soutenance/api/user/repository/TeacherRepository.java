@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface TeacherRepository extends JpaRepository<Teacher, String> {
     List<Teacher> findByGradeId(String gradeId);
+    List<Teacher> findByDepartmentId(String departmentId);
 }

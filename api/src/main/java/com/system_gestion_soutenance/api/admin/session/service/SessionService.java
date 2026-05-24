@@ -55,7 +55,7 @@ public class SessionService {
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session non trouvée"));
 
-        if (!defenseSessionRepository.findByGlobalSessionId(id).isEmpty()) {
+        if (!defenseSessionRepository.findByGlobalSession_Id(id).isEmpty()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Impossible de supprimer cette session car des sessions de soutenance y sont rattachées");
         }

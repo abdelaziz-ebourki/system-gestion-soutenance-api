@@ -1,6 +1,10 @@
 package com.system_gestion_soutenance.api.teacher.evaluation.controller;
 
+import com.system_gestion_soutenance.api.teacher.evaluation.dto.EvaluationSubmitRequest;
 import com.system_gestion_soutenance.api.teacher.evaluation.service.EvaluationService;
+import com.system_gestion_soutenance.api.user.entity.User;
+import jakarta.validation.Valid;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,12 +21,17 @@ public class EvaluationController {
     }
 
     @GetMapping
-    public List<Map<String, Object>> findByTeacher(@RequestParam(defaultValue = "3") String teacherId) {
-        return evaluationService.findByTeacher(teacherId);
+    public List<Map<String, Object>> findByTeacher() {
+        return evaluationService.findByTeacher(getCurrentUserId());
     }
 
     @PostMapping("/{id}")
-    public Map<String, Object> submit(@PathVariable String id, @RequestBody Map<String, Object> body) {
-        return evaluationService.submit(id, body);
+    public Map<String, Object> submit(@PathVariable String id,
+                                       @Valid @RequestBody EvaluationSubmitRequest request) {
+        return evaluationService.submit(id, request);
+    }
+
+    private String getCurrentUserId() {
+        return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

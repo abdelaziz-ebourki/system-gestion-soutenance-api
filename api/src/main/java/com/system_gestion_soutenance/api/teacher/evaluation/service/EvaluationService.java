@@ -4,6 +4,7 @@ import com.system_gestion_soutenance.api.coordinator.group.entity.Group;
 import com.system_gestion_soutenance.api.coordinator.group.repository.GroupRepository;
 import com.system_gestion_soutenance.api.coordinator.project.entity.Project;
 import com.system_gestion_soutenance.api.coordinator.project.repository.ProjectRepository;
+import com.system_gestion_soutenance.api.teacher.evaluation.dto.EvaluationSubmitRequest;
 import com.system_gestion_soutenance.api.teacher.evaluation.entity.Evaluation;
 import com.system_gestion_soutenance.api.teacher.evaluation.repository.EvaluationRepository;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class EvaluationService {
                 .collect(Collectors.toList());
     }
 
-    public Map<String, Object> submit(String id, Map<String, Object> body) {
+    public Map<String, Object> submit(String id, EvaluationSubmitRequest request) {
         Evaluation evaluation = evaluationRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Évaluation non trouvée"));
@@ -45,10 +46,10 @@ public class EvaluationService {
                     "Cette évaluation a déjà été soumise");
         }
 
-        if (body.containsKey("score"))
-            evaluation.setScore(((Number) body.get("score")).doubleValue());
-        if (body.containsKey("comment"))
-            evaluation.setComment((String) body.get("comment"));
+        if (request.score() != null)
+            evaluation.setScore(request.score());
+        if (request.comment() != null)
+            evaluation.setComment(request.comment());
 
         evaluation.setStatus("submitted");
         evaluation.setSubmittedAt(LocalDateTime.now());
