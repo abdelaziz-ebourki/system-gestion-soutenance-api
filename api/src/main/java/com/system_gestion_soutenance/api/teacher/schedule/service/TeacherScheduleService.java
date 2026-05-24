@@ -4,6 +4,7 @@ import com.system_gestion_soutenance.api.admin.room.entity.Room;
 import com.system_gestion_soutenance.api.coordinator.group.entity.Group;
 import com.system_gestion_soutenance.api.coordinator.group.repository.GroupRepository;
 import com.system_gestion_soutenance.api.coordinator.jury.entity.Jury;
+import com.system_gestion_soutenance.api.coordinator.jury.entity.JuryMember;
 import com.system_gestion_soutenance.api.coordinator.jury.repository.JuryRepository;
 import com.system_gestion_soutenance.api.coordinator.project.entity.Project;
 import com.system_gestion_soutenance.api.coordinator.project.repository.ProjectRepository;
@@ -35,37 +36,23 @@ public class TeacherScheduleService {
 
     public List<Map<String, Object>> getSchedule(String teacherId) {
         Set<String> projectIdsForTeacher = new HashSet<>();
+        Map<String, String> projectRoles = new HashMap<>();
 
         for (Jury jury : juryRepository.findAll()) {
-            if (matchesTeacher(jury, teacherId)) {
-                projectIdsForTeacher.add(jury.getProject().getId());
+            for (JuryMember member : jury.getMembers()) {
+                if (member.getTeacher() != null && member.getTeacher().getId().equals(teacherId)) {
+                    String pid = jury.getProject().getId();
+                    projectIdsForTeacher.add(pid);
+                    projectRoles.put(pid, member.getRoleName());
+                }
             }
         }
 
         for (Project project : projectRepository.findAll()) {
             if (project.getSupervisor() != null && project.getSupervisor().getId().equals(teacherId)) {
-                projectIdsForTeacher.add(project.getId());
-            }
-        }
-
-        Map<String, String> projectRoles = new HashMap<>();
-        for (Jury jury : juryRepository.findAll()) {
-            String pid = jury.getProject().getId();
-            if (projectIdsForTeacher.contains(pid)) {
-                if (jury.getPresident().getId().equals(teacherId))
-                    projectRoles.put(pid, "president");
-                else if (jury.getReporter().getId().equals(teacherId))
-                    projectRoles.put(pid, "reporter");
-                else if (jury.getExaminer().getId().equals(teacherId))
-                    projectRoles.put(pid, "examiner");
-            }
-        }
-        for (Project project : projectRepository.findAll()) {
-            String pid = project.getId();
-            if (projectIdsForTeacher.contains(pid) && !projectRoles.containsKey(pid)) {
-                if (project.getSupervisor() != null && project.getSupervisor().getId().equals(teacherId)) {
-                    projectRoles.put(pid, "supervisor");
-                }
+                String pid = project.getId();
+                projectIdsForTeacher.add(pid);
+                projectRoles.putIfAbsent(pid, "supervisor");
             }
         }
 
@@ -116,11 +103,5 @@ public class TeacherScheduleService {
         }
 
         return result;
-    }
-
-    private boolean matchesTeacher(Jury jury, String teacherId) {
-        return jury.getPresident().getId().equals(teacherId)
-                || jury.getReporter().getId().equals(teacherId)
-                || jury.getExaminer().getId().equals(teacherId);
     }
 }

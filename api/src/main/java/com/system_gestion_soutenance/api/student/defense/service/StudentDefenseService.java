@@ -3,12 +3,12 @@ package com.system_gestion_soutenance.api.student.defense.service;
 import com.system_gestion_soutenance.api.coordinator.group.entity.Group;
 import com.system_gestion_soutenance.api.coordinator.group.repository.GroupRepository;
 import com.system_gestion_soutenance.api.coordinator.jury.entity.Jury;
+import com.system_gestion_soutenance.api.coordinator.jury.entity.JuryMember;
 import com.system_gestion_soutenance.api.coordinator.jury.repository.JuryRepository;
 import com.system_gestion_soutenance.api.coordinator.project.entity.Project;
 import com.system_gestion_soutenance.api.coordinator.project.repository.ProjectRepository;
 import com.system_gestion_soutenance.api.coordinator.schedule.entity.SlotAssignment;
 import com.system_gestion_soutenance.api.coordinator.schedule.repository.SlotAssignmentRepository;
-import com.system_gestion_soutenance.api.user.entity.Teacher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -51,9 +51,14 @@ public class StudentDefenseService {
 
         List<Map<String, String>> juryMembers = new ArrayList<>();
         for (Jury jury : juryRepository.findByProjectId(project.getId())) {
-            addJuryMember(juryMembers, "Président", jury.getPresident());
-            addJuryMember(juryMembers, "Rapporteur", jury.getReporter());
-            addJuryMember(juryMembers, "Examinateur", jury.getExaminer());
+            for (JuryMember member : jury.getMembers()) {
+                if (member.getTeacher() != null) {
+                    Map<String, String> m = new LinkedHashMap<>();
+                    m.put("name", member.getTeacher().getFirstName() + " " + member.getTeacher().getLastName());
+                    m.put("role", member.getRoleName());
+                    juryMembers.add(m);
+                }
+            }
         }
         defense.put("juryMembers", juryMembers);
 
@@ -90,12 +95,4 @@ public class StudentDefenseService {
         return null;
     }
 
-    private void addJuryMember(List<Map<String, String>> members, String role, Teacher teacher) {
-        if (teacher != null) {
-            Map<String, String> m = new LinkedHashMap<>();
-            m.put("name", teacher.getFirstName() + " " + teacher.getLastName());
-            m.put("role", role);
-            members.add(m);
-        }
-    }
 }

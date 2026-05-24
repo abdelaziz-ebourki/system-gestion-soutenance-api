@@ -1,11 +1,15 @@
 package com.system_gestion_soutenance.api.coordinator.jury.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.system_gestion_soutenance.api.admin.config.juryrole.entity.JuryRoleTemplate;
 import com.system_gestion_soutenance.api.coordinator.project.entity.Project;
-import com.system_gestion_soutenance.api.user.entity.Teacher;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "jury")
@@ -22,14 +26,19 @@ public class Jury {
     private Project project;
 
     @ManyToOne
-    @JoinColumn(name = "president_id", nullable = false)
-    private Teacher president;
+    @JoinColumn(name = "jury_role_template_id", nullable = false)
+    @JsonIgnore
+    private JuryRoleTemplate template;
 
-    @ManyToOne
-    @JoinColumn(name = "reporter_id", nullable = false)
-    private Teacher reporter;
+    @OneToMany(mappedBy = "jury", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<JuryMember> members = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "examiner_id", nullable = false)
-    private Teacher examiner;
+    public String getTemplateId() {
+        return template != null ? template.getId() : null;
+    }
+
+    public String getTemplateName() {
+        return template != null ? template.getName() : null;
+    }
 }

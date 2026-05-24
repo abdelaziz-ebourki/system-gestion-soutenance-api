@@ -1,6 +1,6 @@
 package com.system_gestion_soutenance.api.teacher.stats.service;
 
-import com.system_gestion_soutenance.api.coordinator.jury.repository.JuryRepository;
+import com.system_gestion_soutenance.api.coordinator.jury.repository.JuryMemberRepository;
 import com.system_gestion_soutenance.api.coordinator.unavailability.repository.UnavailabilityRepository;
 import com.system_gestion_soutenance.api.teacher.evaluation.repository.EvaluationRepository;
 import org.springframework.stereotype.Service;
@@ -12,14 +12,14 @@ import java.util.Map;
 public class TeacherStatsService {
 
     private final EvaluationRepository evaluationRepository;
-    private final JuryRepository juryRepository;
+    private final JuryMemberRepository juryMemberRepository;
     private final UnavailabilityRepository unavailabilityRepository;
 
     public TeacherStatsService(EvaluationRepository evaluationRepository,
-                                JuryRepository juryRepository,
+                                JuryMemberRepository juryMemberRepository,
                                 UnavailabilityRepository unavailabilityRepository) {
         this.evaluationRepository = evaluationRepository;
-        this.juryRepository = juryRepository;
+        this.juryMemberRepository = juryMemberRepository;
         this.unavailabilityRepository = unavailabilityRepository;
     }
 
@@ -33,11 +33,7 @@ public class TeacherStatsService {
                         .filter(u -> u.getTeacherId().equals(teacherId))
                         .mapToLong(u -> u.getSlots() != null ? u.getSlots().size() : 0)
                         .sum());
-        stats.put("juryAssignments", juryRepository.findAll().stream()
-                .filter(j -> j.getPresident().getId().equals(teacherId)
-                        || j.getReporter().getId().equals(teacherId)
-                        || j.getExaminer().getId().equals(teacherId))
-                .count());
+        stats.put("juryAssignments", (long) juryMemberRepository.findByTeacher_Id(teacherId).size());
         return stats;
     }
 }

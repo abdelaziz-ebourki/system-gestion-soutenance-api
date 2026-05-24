@@ -6,6 +6,7 @@ import com.system_gestion_soutenance.api.admin.room.entity.Room;
 import com.system_gestion_soutenance.api.admin.room.repository.RoomRepository;
 import com.system_gestion_soutenance.api.coordinator.group.repository.GroupRepository;
 import com.system_gestion_soutenance.api.coordinator.jury.entity.Jury;
+import com.system_gestion_soutenance.api.coordinator.jury.entity.JuryMember;
 import com.system_gestion_soutenance.api.coordinator.jury.repository.JuryRepository;
 import com.system_gestion_soutenance.api.coordinator.project.entity.Project;
 import com.system_gestion_soutenance.api.coordinator.project.repository.ProjectRepository;
@@ -315,9 +316,11 @@ public class ConflictDetectionService {
     private Set<String> getJuryTeacherIds(String projectId) {
         Set<String> ids = new HashSet<>();
         for (Jury jury : juryRepository.findByProjectId(projectId)) {
-            if (jury.getPresident() != null) ids.add(jury.getPresident().getId());
-            if (jury.getReporter() != null) ids.add(jury.getReporter().getId());
-            if (jury.getExaminer() != null) ids.add(jury.getExaminer().getId());
+            for (JuryMember member : jury.getMembers()) {
+                if (member.getTeacher() != null) {
+                    ids.add(member.getTeacher().getId());
+                }
+            }
         }
         return ids;
     }

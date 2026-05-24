@@ -9,7 +9,7 @@ import com.system_gestion_soutenance.api.admin.config.major.repository.MajorRepo
 import com.system_gestion_soutenance.api.admin.department.entity.Department;
 import com.system_gestion_soutenance.api.admin.department.repository.DepartmentRepository;
 import com.system_gestion_soutenance.api.common.dto.PaginatedResponse;
-import com.system_gestion_soutenance.api.coordinator.jury.repository.JuryRepository;
+import com.system_gestion_soutenance.api.coordinator.jury.repository.JuryMemberRepository;
 import com.system_gestion_soutenance.api.coordinator.project.repository.ProjectRepository;
 import com.system_gestion_soutenance.api.user.dto.BulkCreateRequest;
 import com.system_gestion_soutenance.api.user.dto.CreateUserRequest;
@@ -38,7 +38,7 @@ public class UserService {
     private final LevelRepository levelRepository;
     private final GradeRepository gradeRepository;
     private final DepartmentRepository departmentRepository;
-    private final JuryRepository juryRepository;
+    private final JuryMemberRepository juryMemberRepository;
     private final ProjectRepository projectRepository;
 
     public UserService(UserRepository userRepository,
@@ -49,7 +49,7 @@ public class UserService {
                        LevelRepository levelRepository,
                        GradeRepository gradeRepository,
                        DepartmentRepository departmentRepository,
-                       JuryRepository juryRepository,
+                       JuryMemberRepository juryMemberRepository,
                        ProjectRepository projectRepository) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
@@ -59,7 +59,7 @@ public class UserService {
         this.levelRepository = levelRepository;
         this.gradeRepository = gradeRepository;
         this.departmentRepository = departmentRepository;
-        this.juryRepository = juryRepository;
+        this.juryMemberRepository = juryMemberRepository;
         this.projectRepository = projectRepository;
     }
 
@@ -209,9 +209,7 @@ public class UserService {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "Impossible de supprimer cet enseignant car il est responsable de département(s)");
             }
-            if (!juryRepository.findByPresidentId(id).isEmpty()
-                    || !juryRepository.findByReporterId(id).isEmpty()
-                    || !juryRepository.findByExaminerId(id).isEmpty()) {
+            if (!juryMemberRepository.findByTeacher_Id(id).isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT,
                         "Impossible de supprimer cet enseignant car il est membre d'un jury");
             }
