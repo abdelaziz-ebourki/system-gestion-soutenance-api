@@ -24,7 +24,7 @@ jobs:
 
           rm -rf api/
           mkdir -p api
-          rsync -a --exclude=.git --exclude=archive --exclude=target --exclude=.mvn \
+          rsync -a --exclude=.git --exclude=archive --exclude=target \
             "${{ github.workspace }}/" api/
 
           git add api/
