@@ -6,6 +6,7 @@ import com.system_gestion_soutenance.api.auth.dto.LoginResponse;
 import com.system_gestion_soutenance.api.auth.dto.ResetPasswordRequest;
 import com.system_gestion_soutenance.api.auth.dto.VerifyRequest;
 import com.system_gestion_soutenance.api.auth.jwt.JwtTokenProvider;
+import com.system_gestion_soutenance.api.notification.service.EmailService;
 import com.system_gestion_soutenance.api.user.dto.UserDto;
 import com.system_gestion_soutenance.api.user.entity.User;
 import com.system_gestion_soutenance.api.user.repository.UserRepository;
@@ -24,11 +25,14 @@ public class AuthService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
-    public AuthService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, JwtTokenProvider jwtTokenProvider,
+                        PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     public LoginResponse login(LoginRequest request) {
@@ -69,8 +73,8 @@ public class AuthService {
             user.setResetToken(UUID.randomUUID().toString());
             user.setResetTokenExpires(Instant.now().plusSeconds(3600));
             userRepository.save(user);
-            System.out.println("[Mock Email] Reset link to " + request.email()
-                    + ": /reset-password?token=" + user.getResetToken());
+            String resetLink = "/reset-password?token=" + user.getResetToken();
+            emailService.sendPasswordResetEmail(request.email(), resetLink);
         });
     }
 
