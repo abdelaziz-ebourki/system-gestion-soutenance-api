@@ -49,4 +49,26 @@ public class ScheduleController {
         Map<String, Map<String, Object>> result = scheduleService.saveSchedule(schedule);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/auto-generate")
+    public ResponseEntity<Map<String, Object>> autoGenerate(@RequestBody Map<String, String> body) {
+        String defenseSessionId = body.get("defenseSessionId");
+        if (defenseSessionId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Le champ 'defenseSessionId' est requis");
+        }
+        Map<String, Map<String, Object>> schedule = scheduleService.autoGenerate(defenseSessionId);
+        return ResponseEntity.ok(Map.of("schedule", schedule));
+    }
+
+    @PostMapping("/publish")
+    public ResponseEntity<Map<String, String>> publish(@RequestBody Map<String, String> body) {
+        String defenseSessionId = body.get("defenseSessionId");
+        if (defenseSessionId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Le champ 'defenseSessionId' est requis");
+        }
+        scheduleService.publish(defenseSessionId);
+        return ResponseEntity.ok(Map.of("message", "Planning publié avec succès."));
+    }
 }
