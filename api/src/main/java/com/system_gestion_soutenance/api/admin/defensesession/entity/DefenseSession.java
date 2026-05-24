@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "defense_session")
@@ -46,13 +48,12 @@ public class DefenseSession {
     @Column(name = "submission_deadline")
     private LocalDate submissionDeadline;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "president", column = @Column(name = "coeff_president")),
-            @AttributeOverride(name = "reporter", column = @Column(name = "coeff_reporter")),
-            @AttributeOverride(name = "examiner", column = @Column(name = "coeff_examiner"))
-    })
-    private EvaluationCoefficients evaluationCoefficients;
+    @ElementCollection
+    @CollectionTable(name = "defense_session_coefficients",
+            joinColumns = @JoinColumn(name = "defense_session_id"))
+    @MapKeyColumn(name = "role_name")
+    @Column(name = "coefficient")
+    private Map<String, Integer> evaluationCoefficients = new HashMap<>();
 
     @ManyToOne
     @JoinColumn(name = "jury_role_template_id")

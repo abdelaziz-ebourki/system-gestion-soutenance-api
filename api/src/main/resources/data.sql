@@ -57,7 +57,8 @@ VALUES ('jrt1', 'Président', 1, 30),
        ('jrt1', 'Examinateur', 1, 35);
 
 -- Defense Sessions
-INSERT INTO defense_session (id, name, defense_type, status, max_group_size, defense_duration, break_duration, submission_deadline, coeff_president, coeff_reporter, coeff_examiner, global_session_id, jury_role_template_id, start_date, end_date) VALUES ('ds1', 'Soutenance PFE 2026', 'PFE', 'DRAFT', 3, 30, 10, '2026-06-01', 0.4, 0.3, 0.3, 's1', 'jrt1', '2026-06-15', '2026-07-10');
+INSERT INTO defense_session (id, name, defense_type, status, max_group_size, defense_duration, break_duration, submission_deadline, global_session_id, jury_role_template_id, start_date, end_date) VALUES ('ds1', 'Soutenance PFE 2026', 'PFE', 'DRAFT', 3, 30, 10, '2026-06-01', 's1', 'jrt1', '2026-06-15', '2026-07-10');
+INSERT INTO defense_session_coefficients (defense_session_id, role_name, coefficient) VALUES ('ds1', 'Président', 30), ('ds1', 'Rapporteur', 35), ('ds1', 'Examinateur', 35);
 
 -- Defense Settings
 INSERT INTO defense_settings (id, start_time, end_time, defense_duration, break_duration, group_creation_start_date, group_creation_end_date) VALUES ('default', '08:00', '18:00', 30, 15, '2026-03-01', '2026-05-01');

@@ -13,7 +13,7 @@ public record CreateDefenseSessionRequest(
         int defenseDuration,
         int breakDuration,
         String submissionDeadline,
-        Map<String, Double> evaluationCoefficients,
+        Map<String, Integer> evaluationCoefficients,
         String juryRoleTemplateId,
         @NotBlank String startDate,
         @NotBlank String endDate

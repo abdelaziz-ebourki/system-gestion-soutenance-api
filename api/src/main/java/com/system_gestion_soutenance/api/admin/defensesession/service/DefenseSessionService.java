@@ -1,26 +1,30 @@
 package com.system_gestion_soutenance.api.admin.defensesession.service;
 
 import com.system_gestion_soutenance.api.admin.config.juryrole.entity.JuryRoleTemplate;
+import com.system_gestion_soutenance.api.admin.config.juryrole.entity.TemplateRole;
 import com.system_gestion_soutenance.api.admin.config.juryrole.repository.JuryRoleTemplateRepository;
 import com.system_gestion_soutenance.api.admin.defensesession.dto.CreateDefenseSessionRequest;
 import com.system_gestion_soutenance.api.admin.defensesession.entity.DefenseSession;
 import com.system_gestion_soutenance.api.admin.defensesession.entity.DefenseSessionStatus;
 import com.system_gestion_soutenance.api.admin.defensesession.entity.DefenseType;
-import com.system_gestion_soutenance.api.admin.defensesession.entity.EvaluationCoefficients;
 import com.system_gestion_soutenance.api.admin.defensesession.repository.DefenseSessionRepository;
 import com.system_gestion_soutenance.api.admin.session.entity.Session;
 import com.system_gestion_soutenance.api.admin.session.repository.SessionRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class DefenseSessionService {
 
     private static final Map<DefenseSessionStatus, Set<DefenseSessionStatus>> VALID_TRANSITIONS = Map.of(
@@ -47,6 +51,7 @@ public class DefenseSessionService {
         return defenseSessionRepository.findAll();
     }
 
+    @Transactional
     public DefenseSession create(CreateDefenseSessionRequest request) {
         DefenseSession ds = new DefenseSession();
         ds.setId(UUID.randomUUID().toString());
@@ -64,23 +69,24 @@ public class DefenseSessionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Session globale introuvable"));
         ds.setGlobalSession(globalSession);
 
-        if (request.evaluationCoefficients() != null) {
-            ds.setEvaluationCoefficients(new EvaluationCoefficients(
-                    request.evaluationCoefficients().getOrDefault("president", 0.0),
-                    request.evaluationCoefficients().getOrDefault("reporter", 0.0),
-                    request.evaluationCoefficients().getOrDefault("examiner", 0.0)
-            ));
-        }
-
         if (request.juryRoleTemplateId() != null) {
             JuryRoleTemplate template = juryRoleTemplateRepository.findById(request.juryRoleTemplateId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Template de rôle jury introuvable"));
             ds.setJuryRoleTemplate(template);
         }
 
+        if (request.evaluationCoefficients() != null) {
+            ds.setEvaluationCoefficients(new HashMap<>(request.evaluationCoefficients()));
+        } else if (request.juryRoleTemplateId() != null && ds.getJuryRoleTemplate() != null
+                && ds.getJuryRoleTemplate().getRoles() != null) {
+            ds.setEvaluationCoefficients(ds.getJuryRoleTemplate().getRoles().stream()
+                    .collect(Collectors.toMap(TemplateRole::getName, TemplateRole::getCoefficient)));
+        }
+
         return defenseSessionRepository.save(ds);
     }
 
+    @Transactional
     public DefenseSession update(String id, CreateDefenseSessionRequest request) {
         DefenseSession ds = defenseSessionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session de soutenance non trouvée"));
@@ -102,20 +108,20 @@ public class DefenseSessionService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Session globale introuvable"));
         ds.setGlobalSession(globalSession);
 
-        if (request.evaluationCoefficients() != null) {
-            ds.setEvaluationCoefficients(new EvaluationCoefficients(
-                    request.evaluationCoefficients().getOrDefault("president", 0.0),
-                    request.evaluationCoefficients().getOrDefault("reporter", 0.0),
-                    request.evaluationCoefficients().getOrDefault("examiner", 0.0)
-            ));
-        }
-
         if (request.juryRoleTemplateId() != null) {
             JuryRoleTemplate template = juryRoleTemplateRepository.findById(request.juryRoleTemplateId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Template de rôle jury introuvable"));
             ds.setJuryRoleTemplate(template);
         } else {
             ds.setJuryRoleTemplate(null);
+        }
+
+        if (request.evaluationCoefficients() != null) {
+            ds.setEvaluationCoefficients(new HashMap<>(request.evaluationCoefficients()));
+        } else if (request.juryRoleTemplateId() != null && ds.getJuryRoleTemplate() != null
+                && ds.getJuryRoleTemplate().getRoles() != null) {
+            ds.setEvaluationCoefficients(ds.getJuryRoleTemplate().getRoles().stream()
+                    .collect(Collectors.toMap(TemplateRole::getName, TemplateRole::getCoefficient)));
         }
 
         return defenseSessionRepository.save(ds);
