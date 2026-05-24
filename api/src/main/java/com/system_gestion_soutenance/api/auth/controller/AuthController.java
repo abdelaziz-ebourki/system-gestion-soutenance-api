@@ -1,7 +1,9 @@
 package com.system_gestion_soutenance.api.auth.controller;
 
+import com.system_gestion_soutenance.api.auth.dto.ForgotPasswordRequest;
 import com.system_gestion_soutenance.api.auth.dto.LoginRequest;
 import com.system_gestion_soutenance.api.auth.dto.LoginResponse;
+import com.system_gestion_soutenance.api.auth.dto.ResetPasswordRequest;
 import com.system_gestion_soutenance.api.auth.dto.VerifyRequest;
 import com.system_gestion_soutenance.api.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -41,6 +43,22 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/auth/forgot-password")
+    @Operation(summary = "Request a password reset link",
+               description = "Always returns 200 to prevent email enumeration.")
+    public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request);
+        return ResponseEntity.ok(Map.of("message",
+                "Si cet email existe, un lien de réinitialisation a été envoyé."));
+    }
+
+    @PostMapping("/auth/reset-password")
+    @Operation(summary = "Reset password using a valid token")
+    public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
+        return ResponseEntity.ok(Map.of("message", "Mot de passe réinitialisé avec succès."));
     }
 
     @PostMapping("/auth/verify-account")

@@ -1,7 +1,9 @@
 package com.system_gestion_soutenance.api.auth.service;
 
+import com.system_gestion_soutenance.api.auth.dto.ForgotPasswordRequest;
 import com.system_gestion_soutenance.api.auth.dto.LoginRequest;
 import com.system_gestion_soutenance.api.auth.dto.LoginResponse;
+import com.system_gestion_soutenance.api.auth.dto.ResetPasswordRequest;
 import com.system_gestion_soutenance.api.auth.dto.VerifyRequest;
 import com.system_gestion_soutenance.api.auth.jwt.JwtTokenProvider;
 import com.system_gestion_soutenance.api.user.dto.UserDto;
@@ -10,7 +12,11 @@ import com.system_gestion_soutenance.api.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.Instant;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -54,6 +60,34 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setActive(true);
         user.setVerificationToken(null);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void forgotPassword(ForgotPasswordRequest request) {
+        userRepository.findByEmail(request.email()).ifPresent(user -> {
+            user.setResetToken(UUID.randomUUID().toString());
+            user.setResetTokenExpires(Instant.now().plusSeconds(3600));
+            userRepository.save(user);
+            System.out.println("[Mock Email] Reset link to " + request.email()
+                    + ": /reset-password?token=" + user.getResetToken());
+        });
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        User user = userRepository.findByResetToken(request.token())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Token de réinitialisation invalide ou expiré"));
+
+        if (user.getResetTokenExpires() == null || Instant.now().isAfter(user.getResetTokenExpires())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "Token de réinitialisation invalide ou expiré");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.password()));
+        user.setResetToken(null);
+        user.setResetTokenExpires(null);
         userRepository.save(user);
     }
 }
