@@ -1,0 +1,36 @@
+package com.system_gestion_soutenance.api.admin.config.email.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name = "email_config")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmailConfig {
+
+    @Id
+    private String id = "default";
+
+    private String host;
+
+    private int port;
+
+    private String username;
+
+    private String password;
+
+    @Column(name = "sender_name")
+    private String senderName;
+
+    @Column(name = "sender_email")
+    private String senderEmail;
+
+    private String encryption;
+}

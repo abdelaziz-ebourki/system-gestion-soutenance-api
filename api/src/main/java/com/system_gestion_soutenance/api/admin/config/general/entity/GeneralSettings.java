@@ -28,4 +28,7 @@ public class GeneralSettings {
 
     @Column(name = "date_format")
     private String dateFormat;
+
+    @Column(name = "setup_completed")
+    private boolean setupCompleted;
 }

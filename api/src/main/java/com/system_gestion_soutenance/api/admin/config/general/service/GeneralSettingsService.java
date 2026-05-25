@@ -35,6 +35,8 @@ public class GeneralSettingsService {
             settings.setTimezone((String) updates.get("timezone"));
         if (updates.containsKey("dateFormat"))
             settings.setDateFormat((String) updates.get("dateFormat"));
+        if (updates.containsKey("setupCompleted"))
+            settings.setSetupCompleted((Boolean) updates.get("setupCompleted"));
 
         settings.setId("default");
         return repository.save(settings);

@@ -64,7 +64,7 @@ INSERT INTO defense_session_coefficients (defense_session_id, role_name, coeffic
 INSERT INTO defense_settings (id, start_time, end_time, defense_duration, break_duration, group_creation_start_date, group_creation_end_date) VALUES ('default', '08:00', '18:00', 30, 15, '2026-03-01', '2026-05-01');
 
 -- General Settings
-INSERT INTO general_settings (id, institution_name, institution_logo_url, timezone, date_format) VALUES ('default', 'Université Hassan II', '', 'Africa/Casablanca', 'DD/MM/YYYY');
+INSERT INTO general_settings (id, institution_name, institution_logo_url, timezone, date_format, setup_completed) VALUES ('default', 'Université Hassan II', '', 'Africa/Casablanca', 'DD/MM/YYYY', false);
 
 -- Defense Type Config
 INSERT INTO defense_type_config (id, enabled, label, label_plural, default_duration, default_break) VALUES ('pfe', true, 'Projet de Fin d''Études', 'PFE', 30, 15);
@@ -73,6 +73,9 @@ INSERT INTO defense_type_config (id, enabled, label, label_plural, default_durat
 
 -- Document Config
 INSERT INTO document_config (id, max_file_size_mb, allowed_extensions, version_limit) VALUES ('default', 10, 'pdf,doc,docx', 5);
+
+-- Email Config
+INSERT INTO email_config (id, host, port, username, password, sender_name, sender_email, encryption) VALUES ('default', '', 587, '', '', 'Soutenance Université', 'noreply@soutenance-univ.ma', 'tls');
 
 -- ============================================================
 -- 50 generated students (std-1 to std-50)
