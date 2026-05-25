@@ -3,6 +3,8 @@ package com.system_gestion_soutenance.api.admin.department.service;
 import com.system_gestion_soutenance.api.admin.department.dto.CreateDepartmentRequest;
 import com.system_gestion_soutenance.api.admin.department.entity.Department;
 import com.system_gestion_soutenance.api.admin.department.repository.DepartmentRepository;
+import com.system_gestion_soutenance.api.admin.faculty.entity.Faculty;
+import com.system_gestion_soutenance.api.admin.faculty.repository.FacultyRepository;
 import com.system_gestion_soutenance.api.admin.room.repository.RoomRepository;
 import com.system_gestion_soutenance.api.user.entity.Teacher;
 import com.system_gestion_soutenance.api.user.repository.TeacherRepository;
@@ -19,13 +21,16 @@ public class DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final TeacherRepository teacherRepository;
     private final RoomRepository roomRepository;
+    private final FacultyRepository facultyRepository;
 
     public DepartmentService(DepartmentRepository departmentRepository,
                               TeacherRepository teacherRepository,
-                              RoomRepository roomRepository) {
+                              RoomRepository roomRepository,
+                              FacultyRepository facultyRepository) {
         this.departmentRepository = departmentRepository;
         this.teacherRepository = teacherRepository;
         this.roomRepository = roomRepository;
+        this.facultyRepository = facultyRepository;
     }
 
     public List<Department> findAll() {
@@ -49,6 +54,11 @@ public class DepartmentService {
         department.setName(request.name());
         department.setCode(request.code());
 
+        Faculty faculty = facultyRepository.findById(request.facultyId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Faculté introuvable"));
+        department.setFaculty(faculty);
+
         if (request.headId() != null && !request.headId().isBlank()) {
             Teacher head = teacherRepository.findById(request.headId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -66,6 +76,11 @@ public class DepartmentService {
 
         department.setName(request.name());
         department.setCode(request.code());
+
+        Faculty faculty = facultyRepository.findById(request.facultyId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                        "Faculté introuvable"));
+        department.setFaculty(faculty);
 
         if (request.headId() != null && !request.headId().isBlank()) {
             Teacher head = teacherRepository.findById(request.headId())

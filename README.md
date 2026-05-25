@@ -75,13 +75,13 @@ Authentifie un utilisateur et retourne un JWT.
 
 **Request :**
 ```json
-{ "email": "admin@univ.com", "password": "1234" }
+{ "email": "admin@univh2c.ma", "password": "1234" }
 ```
 
 **Response 200 :**
 ```json
 {
-  "user": { "id": "1", "email": "admin@univ.com", "role": "ADMIN", "lastName": "Ahmadi", "firstName": "Mohamed", "isActive": true, ... },
+  "user": { "id": "1", "email": "admin@univh2c.ma", "role": "ADMIN", "lastName": "Ahmadi", "firstName": "Mohamed", "isActive": true, ... },
   "token": "eyJhbGciOiJIUzI1NiJ9...",
   "expiresAt": 1779215552096
 }
@@ -116,12 +116,12 @@ Réinitialise le mot de passe avec un token valide.
 
 | Email | Mot de passe | Rôle |
 |---|---|---|
-| admin@univ.com | 1234 | ADMIN |
-| coord@univ.com | 1234 | COORDINATOR |
-| teacher@univ.com | 1234 | TEACHER |
-| moussa@univ.com | 1234 | TEACHER |
-| student@univ.com | 1234 | STUDENT |
-| student1..50@univ.com | 1234 | STUDENT |
+| admin@univh2c.ma | 1234 | ADMIN |
+| coord@univh2c.ma | 1234 | COORDINATOR |
+| teacher@univh2c.ma | 1234 | TEACHER |
+| moussa@univh2c.ma | 1234 | TEACHER |
+| student@univh2c.ma | 1234 | STUDENT |
+| student1..50@univh2c.ma | 1234 | STUDENT |
 
 ---
 

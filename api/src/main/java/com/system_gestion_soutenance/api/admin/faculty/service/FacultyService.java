@@ -1,0 +1,66 @@
+package com.system_gestion_soutenance.api.admin.faculty.service;
+
+import com.system_gestion_soutenance.api.admin.department.repository.DepartmentRepository;
+import com.system_gestion_soutenance.api.admin.faculty.dto.CreateFacultyRequest;
+import com.system_gestion_soutenance.api.admin.faculty.entity.Faculty;
+import com.system_gestion_soutenance.api.admin.faculty.repository.FacultyRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+public class FacultyService {
+
+    private final FacultyRepository facultyRepository;
+    private final DepartmentRepository departmentRepository;
+
+    public FacultyService(FacultyRepository facultyRepository, DepartmentRepository departmentRepository) {
+        this.facultyRepository = facultyRepository;
+        this.departmentRepository = departmentRepository;
+    }
+
+    public List<Faculty> findAll() {
+        return facultyRepository.findAll();
+    }
+
+    public Faculty findById(String id) {
+        return facultyRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Faculté non trouvée"));
+    }
+
+    public Faculty create(CreateFacultyRequest request) {
+        Faculty faculty = new Faculty();
+        faculty.setId(UUID.randomUUID().toString());
+        faculty.setName(request.name());
+        faculty.setCode(request.code());
+        faculty.setDeanId(request.deanId());
+        faculty.setLogoUrl(request.logoUrl());
+        return facultyRepository.save(faculty);
+    }
+
+    public Faculty update(String id, CreateFacultyRequest request) {
+        Faculty faculty = facultyRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Faculté non trouvée"));
+
+        faculty.setName(request.name());
+        faculty.setCode(request.code());
+        faculty.setDeanId(request.deanId());
+        faculty.setLogoUrl(request.logoUrl());
+        return facultyRepository.save(faculty);
+    }
+
+    public void delete(String id) {
+        Faculty faculty = facultyRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Faculté non trouvée"));
+
+        if (!departmentRepository.findByFaculty_Id(id).isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Impossible de supprimer cette faculté car des départements y sont rattachés");
+        }
+
+        facultyRepository.delete(faculty);
+    }
+}
