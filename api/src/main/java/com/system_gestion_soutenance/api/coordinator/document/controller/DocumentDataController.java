@@ -1,6 +1,7 @@
 package com.system_gestion_soutenance.api.coordinator.document.controller;
 
 import com.system_gestion_soutenance.api.coordinator.document.dto.DefenseIdsRequest;
+import com.system_gestion_soutenance.api.coordinator.document.dto.ProjectIdRequest;
 import com.system_gestion_soutenance.api.coordinator.document.dto.SessionRequest;
 import com.system_gestion_soutenance.api.coordinator.document.service.DocumentDataService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,10 +28,11 @@ public class DocumentDataController {
     }
 
     @PostMapping("/evaluation-sheets")
-    @Operation(summary = "Get evaluation sheets data")
+    @Operation(summary = "Get evaluation sheets data for a project")
     public ResponseEntity<List<Map<String, Object>>> evaluationSheets(
-            @Valid @RequestBody DefenseIdsRequest request) {
-        return ResponseEntity.ok(documentDataService.evaluationSheets(request.defenseIds()));
+            @Valid @RequestBody ProjectIdRequest request) {
+        DefenseIdsRequest idsRequest = new DefenseIdsRequest(null, request.projectId());
+        return ResponseEntity.ok(documentDataService.evaluationSheets(idsRequest));
     }
 
     @PostMapping("/attendance-lists")
@@ -41,10 +43,11 @@ public class DocumentDataController {
     }
 
     @PostMapping("/jury-convocations")
-    @Operation(summary = "Get jury convocation data")
+    @Operation(summary = "Get jury convocation data for a project")
     public ResponseEntity<List<Map<String, Object>>> juryConvocations(
-            @Valid @RequestBody DefenseIdsRequest request) {
-        return ResponseEntity.ok(documentDataService.juryConvocations(request.defenseIds()));
+            @Valid @RequestBody ProjectIdRequest request) {
+        DefenseIdsRequest idsRequest = new DefenseIdsRequest(null, request.projectId());
+        return ResponseEntity.ok(documentDataService.juryConvocations(idsRequest));
     }
 
     @PostMapping("/schedule")
@@ -53,4 +56,12 @@ public class DocumentDataController {
             @Valid @RequestBody SessionRequest request) {
         return ResponseEntity.ok(documentDataService.schedule(request.defenseSessionId()));
     }
+
+    @PostMapping("/proces-verbal")
+    @Operation(summary = "Get proces-verbal (PV) data for a project")
+    public ResponseEntity<Map<String, Object>> procesVerbal(
+            @Valid @RequestBody ProjectIdRequest request) {
+        return ResponseEntity.ok(documentDataService.procesVerbal(request.projectId()));
+    }
+
 }

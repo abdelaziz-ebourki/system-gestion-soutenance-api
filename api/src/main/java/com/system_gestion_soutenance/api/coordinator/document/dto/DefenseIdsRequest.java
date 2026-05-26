@@ -5,5 +5,10 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 
 public record DefenseIdsRequest(
-        @NotEmpty List<String> defenseIds
-) {}
+        List<String> defenseIds,
+        String projectId
+) {
+    public DefenseIdsRequest {
+        if (defenseIds == null) defenseIds = List.of();
+    }
+}

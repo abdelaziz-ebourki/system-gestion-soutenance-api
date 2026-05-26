@@ -1,7 +1,10 @@
 package com.system_gestion_soutenance.api.coordinator.document.service;
 
+import com.system_gestion_soutenance.api.admin.config.general.entity.GeneralSettings;
+import com.system_gestion_soutenance.api.admin.config.general.repository.GeneralSettingsRepository;
 import com.system_gestion_soutenance.api.admin.defensesession.entity.DefenseSession;
 import com.system_gestion_soutenance.api.admin.defensesession.repository.DefenseSessionRepository;
+import com.system_gestion_soutenance.api.coordinator.document.dto.DefenseIdsRequest;
 import com.system_gestion_soutenance.api.coordinator.group.entity.Group;
 import com.system_gestion_soutenance.api.coordinator.group.repository.GroupRepository;
 import com.system_gestion_soutenance.api.coordinator.jury.entity.Jury;
@@ -26,23 +29,27 @@ public class DocumentDataService {
     private final JuryRepository juryRepository;
     private final GroupRepository groupRepository;
     private final DefenseSessionRepository defenseSessionRepository;
+    private final GeneralSettingsRepository generalSettingsRepository;
 
     public DocumentDataService(SlotAssignmentRepository slotAssignmentRepository,
                                 ProjectRepository projectRepository,
                                 JuryRepository juryRepository,
                                 GroupRepository groupRepository,
-                                DefenseSessionRepository defenseSessionRepository) {
+                                DefenseSessionRepository defenseSessionRepository,
+                                GeneralSettingsRepository generalSettingsRepository) {
         this.slotAssignmentRepository = slotAssignmentRepository;
         this.projectRepository = projectRepository;
         this.juryRepository = juryRepository;
         this.groupRepository = groupRepository;
         this.defenseSessionRepository = defenseSessionRepository;
+        this.generalSettingsRepository = generalSettingsRepository;
     }
 
-    public List<Map<String, Object>> evaluationSheets(List<String> defenseIds) {
+    public List<Map<String, Object>> evaluationSheets(DefenseIdsRequest request) {
+        List<String> ids = resolveDefenseIds(request);
         List<Map<String, Object>> result = new ArrayList<>();
 
-        for (String id : defenseIds) {
+        for (String id : ids) {
             SlotAssignment slot = slotAssignmentRepository.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Soutenance non trouvée: " + id));
@@ -73,10 +80,11 @@ public class DocumentDataService {
         return result;
     }
 
-    public List<Map<String, Object>> juryConvocations(List<String> defenseIds) {
+    public List<Map<String, Object>> juryConvocations(DefenseIdsRequest request) {
+        List<String> ids = resolveDefenseIds(request);
         List<Map<String, Object>> result = new ArrayList<>();
 
-        for (String id : defenseIds) {
+        for (String id : ids) {
             SlotAssignment slot = slotAssignmentRepository.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Soutenance non trouvée: " + id));
@@ -119,6 +127,63 @@ public class DocumentDataService {
         result.put("slots", slots);
 
         return result;
+    }
+
+    public Map<String, Object> procesVerbal(String projectId) {
+        Map<String, Object> result = new LinkedHashMap<>();
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Projet non trouvé: " + projectId));
+
+        GeneralSettings settings = generalSettingsRepository.findById("default").orElse(null);
+        Map<String, Object> settingsMap = new LinkedHashMap<>();
+        if (settings != null) {
+            settingsMap.put("institutionName", settings.getInstitutionName());
+            settingsMap.put("institutionLogoUrl", settings.getInstitutionLogoUrl());
+            settingsMap.put("timezone", settings.getTimezone());
+            settingsMap.put("dateFormat", settings.getDateFormat());
+        }
+        result.put("settings", settingsMap);
+
+        Map<String, Object> grade = new LinkedHashMap<>();
+        grade.put("projectId", project.getId());
+        grade.put("projectTitle", project.getTitle());
+        grade.put("finalScore", 0);
+        grade.put("decision", "En attente");
+        result.put("grade", grade);
+
+        result.put("studentNames", getStudentNames(projectId));
+        result.put("supervisorName", project.getSupervisor() != null
+                ? project.getSupervisor().getFirstName() + " " + project.getSupervisor().getLastName()
+                : null);
+
+        List<Map<String, Object>> juryMembers = new ArrayList<>();
+        List<Jury> juries = juryRepository.findByProjectId(projectId);
+        for (Jury jury : juries) {
+            for (JuryMember member : jury.getMembers()) {
+                Map<String, Object> jm = new LinkedHashMap<>();
+                jm.put("roleName", member.getRoleName());
+                jm.put("teacherName", member.getTeacher().getFirstName()
+                        + " " + member.getTeacher().getLastName());
+                juryMembers.add(jm);
+            }
+        }
+        result.put("juryMembers", juryMembers);
+
+        return result;
+    }
+
+    private List<String> resolveDefenseIds(DefenseIdsRequest request) {
+        if (request.projectId() != null && !request.projectId().isBlank()) {
+            List<SlotAssignment> slots = slotAssignmentRepository.findByProjectId(request.projectId());
+            if (slots.isEmpty()) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Aucune soutenance trouvée pour le projet: " + request.projectId());
+            }
+            return slots.stream().map(SlotAssignment::getId).toList();
+        }
+        return request.defenseIds();
     }
 
     private Map<String, Object> buildDefenseData(SlotAssignment slot, Project project) {
