@@ -46,7 +46,6 @@ public class GroupService {
         }
 
         Group group = new Group();
-        group.setId(UUID.randomUUID().toString());
         group.setGroupName(request.groupName());
         group.setProject(project);
         group.setStudents(students);
@@ -55,7 +54,7 @@ public class GroupService {
         return toResponse(groupRepository.save(group));
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         if (!groupRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Groupe non trouvé");
         }
@@ -70,7 +69,7 @@ public class GroupService {
         map.put("projectTitle", group.getProject() != null ? group.getProject().getTitle() : null);
 
         List<String> studentIds = group.getStudents() != null
-                ? group.getStudents().stream().map(Student::getId).collect(Collectors.toList())
+                ? group.getStudents().stream().map(s -> String.valueOf(s.getId())).collect(Collectors.toList())
                 : List.of();
         List<String> studentNames = group.getStudents() != null
                 ? group.getStudents().stream()

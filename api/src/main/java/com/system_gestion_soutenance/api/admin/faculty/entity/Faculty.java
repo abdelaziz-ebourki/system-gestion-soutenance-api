@@ -13,7 +13,8 @@ import lombok.NoArgsConstructor;
 public class Faculty {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String name;
@@ -22,7 +23,7 @@ public class Faculty {
     private String code;
 
     @Column(name = "dean_id")
-    private String deanId;
+    private Long deanId;
 
     @Column(name = "logo_url")
     private String logoUrl;

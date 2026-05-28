@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class GradeConfigService {
@@ -33,12 +32,11 @@ public class GradeConfigService {
         }
 
         Grade grade = new Grade();
-        grade.setId(UUID.randomUUID().toString());
         grade.setName(request.name());
         return gradeRepository.save(grade);
     }
 
-    public Grade update(String id, CreateGradeRequest request) {
+    public Grade update(Long id, CreateGradeRequest request) {
         Grade grade = gradeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Grade non trouvé"));
@@ -47,7 +45,7 @@ public class GradeConfigService {
         return gradeRepository.save(grade);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         Grade grade = gradeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Grade non trouvé"));

@@ -31,13 +31,13 @@ public class StudentDocumentController {
 
     @PostMapping("/{id}/upload")
     @Operation(summary = "Upload a document file")
-    public ResponseEntity<StudentDocument> upload(@PathVariable String id,
+    public ResponseEntity<StudentDocument> upload(@PathVariable Long id,
                                                    @RequestParam("file") MultipartFile file) {
         StudentDocument doc = studentDocumentService.upload(id, file);
         return ResponseEntity.ok(doc);
     }
 
-    private String getCurrentUserId() {
+    private Long getCurrentUserId() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

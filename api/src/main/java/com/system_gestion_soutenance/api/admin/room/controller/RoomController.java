@@ -46,13 +46,13 @@ public class RoomController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a room")
-    public Room update(@PathVariable String id, @Valid @RequestBody CreateRoomRequest request) {
+    public Room update(@PathVariable Long id, @Valid @RequestBody CreateRoomRequest request) {
         return roomService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a room")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         roomService.delete(id);
         return ResponseEntity.noContent().build();
     }

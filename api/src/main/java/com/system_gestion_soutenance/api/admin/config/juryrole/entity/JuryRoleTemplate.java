@@ -17,7 +17,8 @@ import java.util.List;
 public class JuryRoleTemplate {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false, unique = true)
     private String name;

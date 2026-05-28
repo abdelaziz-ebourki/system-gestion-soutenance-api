@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class DocumentConfig {
 
     @Id
-    private String id = "default";
+    private Long id = 1L;
 
     @Column(name = "max_file_size_mb")
     private int maxFileSizeMb;

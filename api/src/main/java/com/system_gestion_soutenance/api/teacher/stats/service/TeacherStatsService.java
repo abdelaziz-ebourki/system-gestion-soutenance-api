@@ -23,7 +23,7 @@ public class TeacherStatsService {
         this.unavailabilityRepository = unavailabilityRepository;
     }
 
-    public Map<String, Object> getStats(String teacherId) {
+    public Map<String, Object> getStats(Long teacherId) {
         Map<String, Object> stats = new HashMap<>();
         stats.put("upcomingDefenses", 0);
         stats.put("pendingEvaluations", evaluationRepository.findByTeacherId(teacherId).stream()

@@ -18,13 +18,13 @@ public class GeneralSettingsService {
     }
 
     public GeneralSettings get() {
-        return repository.findById("default")
+        return repository.findById(1L)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Paramètres généraux non configurés"));
     }
 
     public GeneralSettings update(Map<String, Object> updates) {
-        GeneralSettings settings = repository.findById("default")
+        GeneralSettings settings = repository.findById(1L)
                 .orElse(new GeneralSettings());
 
         if (updates.containsKey("institutionName"))
@@ -38,7 +38,7 @@ public class GeneralSettingsService {
         if (updates.containsKey("setupCompleted"))
             settings.setSetupCompleted((Boolean) updates.get("setupCompleted"));
 
-        settings.setId("default");
+        settings.setId(1L);
         return repository.save(settings);
     }
 }

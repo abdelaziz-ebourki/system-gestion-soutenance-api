@@ -38,13 +38,13 @@ public class JuryController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a jury")
-    public Map<String, Object> update(@PathVariable String id, @RequestBody Map<String, Object> updates) {
+    public Map<String, Object> update(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return juryService.update(id, updates);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a jury")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         juryService.delete(id);
         return ResponseEntity.noContent().build();
     }

@@ -33,7 +33,7 @@ public class StudentDefenseService {
         this.slotAssignmentRepository = slotAssignmentRepository;
     }
 
-    public Map<String, Object> getDefense(String studentId) {
+    public Map<String, Object> getDefense(Long studentId) {
         Group group = findGroupForStudent(studentId);
         if (group == null || group.getProject() == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -85,7 +85,7 @@ public class StudentDefenseService {
         return defense;
     }
 
-    private Group findGroupForStudent(String studentId) {
+    private Group findGroupForStudent(Long studentId) {
         for (Group g : groupRepository.findAll()) {
             if (g.getStudents() != null &&
                     g.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))) {

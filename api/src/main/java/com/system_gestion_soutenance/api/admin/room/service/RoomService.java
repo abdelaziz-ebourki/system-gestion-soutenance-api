@@ -12,7 +12,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class RoomService {
@@ -35,7 +34,6 @@ public class RoomService {
                         "Département introuvable"));
 
         Room room = new Room();
-        room.setId(UUID.randomUUID().toString());
         room.setName(request.name());
         room.setCapacity(request.capacity());
         room.setDepartment(dept);
@@ -51,7 +49,6 @@ public class RoomService {
                             "Département introuvable: " + entry.departmentId()));
 
             Room room = new Room();
-            room.setId(UUID.randomUUID().toString());
             room.setName(entry.name());
             room.setCapacity(entry.capacity());
             room.setDepartment(dept);
@@ -61,7 +58,7 @@ public class RoomService {
         return created;
     }
 
-    public Room update(String id, CreateRoomRequest request) {
+    public Room update(Long id, CreateRoomRequest request) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Salle non trouvée"));
@@ -76,7 +73,7 @@ public class RoomService {
         return roomRepository.save(room);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         if (!roomRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Salle non trouvée");
         }

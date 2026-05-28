@@ -1,11 +1,12 @@
 package com.system_gestion_soutenance.api.admin.defensesession.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Map;
 
 public record CreateDefenseSessionRequest(
-        @NotBlank String globalSessionId,
+        @NotNull Long globalSessionId,
         @NotBlank String name,
         @NotBlank String defenseType,
         String status,
@@ -14,7 +15,7 @@ public record CreateDefenseSessionRequest(
         int breakDuration,
         String submissionDeadline,
         Map<String, Integer> evaluationCoefficients,
-        String juryRoleTemplateId,
+        Long juryRoleTemplateId,
         @NotBlank String startDate,
         @NotBlank String endDate
 ) {}

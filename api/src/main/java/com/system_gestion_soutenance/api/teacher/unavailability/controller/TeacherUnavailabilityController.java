@@ -40,7 +40,7 @@ public class TeacherUnavailabilityController {
         return service.saveForTeacher(getCurrentUserId(), slotsByDate);
     }
 
-    private String getCurrentUserId() {
+    private Long getCurrentUserId() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

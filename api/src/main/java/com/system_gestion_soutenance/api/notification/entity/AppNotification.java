@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 public class AppNotification {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String type;

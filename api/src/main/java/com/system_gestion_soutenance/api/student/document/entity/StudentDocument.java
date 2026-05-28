@@ -15,10 +15,11 @@ import java.time.LocalDateTime;
 public class StudentDocument {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "student_id", nullable = false)
-    private String studentId;
+    private Long studentId;
 
     @Column(nullable = false)
     private String name;

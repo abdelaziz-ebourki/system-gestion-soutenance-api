@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +32,7 @@ public class StudentGroupService {
         this.defenseSettingsRepository = defenseSettingsRepository;
     }
 
-    public Map<String, Object> getWorkspace(String studentId) {
+    public Map<String, Object> getWorkspace(Long studentId) {
         Group currentGroup = findGroupForStudent(studentId);
 
         Map<String, Object> workspace = new LinkedHashMap<>();
@@ -47,7 +50,7 @@ public class StudentGroupService {
         }
         workspace.put("availableGroups", available);
 
-        DefenseSettings ds = defenseSettingsRepository.findById("default").orElse(null);
+        DefenseSettings ds = defenseSettingsRepository.findById(1L).orElse(null);
         String startDate = ds != null ? ds.getGroupCreationStartDate() : "";
         String endDate = ds != null ? ds.getGroupCreationEndDate() : "";
         workspace.put("groupCreationStartDate", startDate);
@@ -57,7 +60,7 @@ public class StudentGroupService {
         return workspace;
     }
 
-    public Map<String, Object> createGroup(String studentId) {
+    public Map<String, Object> createGroup(Long studentId) {
         if (findGroupForStudent(studentId) != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Vous êtes déjà membre d'un groupe");
@@ -72,7 +75,6 @@ public class StudentGroupService {
                         "Étudiant introuvable"));
 
         Group group = new Group();
-        group.setId(UUID.randomUUID().toString());
         group.setGroupName("Groupe de " + student.getFirstName() + " " + student.getLastName());
         group.setStudents(new ArrayList<>(List.of(student)));
         group.setSessionId(null);
@@ -81,7 +83,7 @@ public class StudentGroupService {
         return groupToDetails(group, studentId);
     }
 
-    public Map<String, Object> joinGroup(String groupId, String studentId) {
+    public Map<String, Object> joinGroup(Long groupId, Long studentId) {
         if (findGroupForStudent(studentId) != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Vous êtes déjà membre d'un groupe");
@@ -112,7 +114,7 @@ public class StudentGroupService {
         return groupToDetails(group, studentId);
     }
 
-    private Group findGroupForStudent(String studentId) {
+    private Group findGroupForStudent(Long studentId) {
         for (Group g : groupRepository.findAll()) {
             if (g.getStudents() != null &&
                     g.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))) {
@@ -122,7 +124,7 @@ public class StudentGroupService {
         return null;
     }
 
-    private Map<String, Object> groupToDetails(Group group, String currentStudentId) {
+    private Map<String, Object> groupToDetails(Group group, Long currentStudentId) {
         Map<String, Object> details = new LinkedHashMap<>();
         details.put("id", group.getId());
         details.put("groupName", group.getGroupName());
@@ -149,7 +151,7 @@ public class StudentGroupService {
     }
 
     private boolean isCreationPeriodOpen() {
-        DefenseSettings ds = defenseSettingsRepository.findById("default").orElse(null);
+        DefenseSettings ds = defenseSettingsRepository.findById(1L).orElse(null);
         if (ds == null) return false;
         return isCreationOpen(ds.getGroupCreationStartDate(), ds.getGroupCreationEndDate());
     }

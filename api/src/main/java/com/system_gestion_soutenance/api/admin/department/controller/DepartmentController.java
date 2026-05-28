@@ -31,7 +31,7 @@ public class DepartmentController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a department by ID")
-    public Department findById(@PathVariable String id) {
+    public Department findById(@PathVariable Long id) {
         return departmentService.findById(id);
     }
 
@@ -44,13 +44,13 @@ public class DepartmentController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a department")
-    public Department update(@PathVariable String id, @Valid @RequestBody CreateDepartmentRequest request) {
+    public Department update(@PathVariable Long id, @Valid @RequestBody CreateDepartmentRequest request) {
         return departmentService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a department")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         departmentService.delete(id);
         return ResponseEntity.noContent().build();
     }

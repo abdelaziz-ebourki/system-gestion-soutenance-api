@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class EmailConfig {
 
     @Id
-    private String id = "default";
+    private Long id = 1L;
 
     private String host;
 

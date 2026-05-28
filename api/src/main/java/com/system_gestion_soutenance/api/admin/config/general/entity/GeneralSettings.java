@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class GeneralSettings {
 
     @Id
-    private String id = "default";
+    private Long id = 1L;
 
     @Column(name = "institution_name")
     private String institutionName;

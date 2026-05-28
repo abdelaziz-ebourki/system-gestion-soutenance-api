@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 public class AuditLog {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String action;
@@ -24,7 +25,7 @@ public class AuditLog {
     private String entity;
 
     @Column(name = "entity_id")
-    private String entityId;
+    private Long entityId;
 
     @Column(name = "admin_email")
     private String adminEmail;

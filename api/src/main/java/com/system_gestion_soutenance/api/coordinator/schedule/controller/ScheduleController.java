@@ -63,7 +63,7 @@ public class ScheduleController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Le champ 'defenseSessionId' est requis");
         }
-        Map<String, Map<String, Object>> schedule = scheduleService.autoGenerate(defenseSessionId);
+        Map<String, Map<String, Object>> schedule = scheduleService.autoGenerate(Long.valueOf(defenseSessionId));
         return ResponseEntity.ok(Map.of("schedule", schedule));
     }
 
@@ -75,7 +75,7 @@ public class ScheduleController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Le champ 'defenseSessionId' est requis");
         }
-        scheduleService.publish(defenseSessionId);
+        scheduleService.publish(Long.valueOf(defenseSessionId));
         return ResponseEntity.ok(Map.of("message", "Planning publié avec succès."));
     }
 }

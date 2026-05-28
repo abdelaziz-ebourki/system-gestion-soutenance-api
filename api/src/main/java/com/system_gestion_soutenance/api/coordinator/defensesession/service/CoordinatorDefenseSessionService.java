@@ -25,7 +25,7 @@ public class CoordinatorDefenseSessionService {
         return defenseSessionRepository.findAll();
     }
 
-    public DefenseSession transition(String id, String toStatus) {
+    public DefenseSession transition(Long id, String toStatus) {
         return adminDefenseSessionService.transition(id, toStatus);
     }
 }

@@ -38,13 +38,13 @@ public class JuryRoleTemplateController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a jury role template")
-    public JuryRoleTemplate update(@PathVariable String id, @Valid @RequestBody CreateJuryRoleTemplateRequest request) {
+    public JuryRoleTemplate update(@PathVariable Long id, @Valid @RequestBody CreateJuryRoleTemplateRequest request) {
         return juryRoleTemplateService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a jury role template")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         juryRoleTemplateService.delete(id);
         return ResponseEntity.noContent().build();
     }

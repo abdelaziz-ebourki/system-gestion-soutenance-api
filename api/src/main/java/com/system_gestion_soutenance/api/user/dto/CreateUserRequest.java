@@ -9,8 +9,8 @@ public record CreateUserRequest(
         @NotBlank @Email String email,
         String role,
         String cne,
-        String majorId,
-        String levelId,
-        String gradeId,
-        String departmentId
+        Long majorId,
+        Long levelId,
+        Long gradeId,
+        Long departmentId
 ) {}

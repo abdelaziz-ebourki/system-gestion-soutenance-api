@@ -30,13 +30,13 @@ public class EvaluationService {
         this.groupRepository = groupRepository;
     }
 
-    public List<Map<String, Object>> findByTeacher(String teacherId) {
+    public List<Map<String, Object>> findByTeacher(Long teacherId) {
         return evaluationRepository.findByTeacherId(teacherId).stream()
                 .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public Map<String, Object> submit(String id, EvaluationSubmitRequest request) {
+    public Map<String, Object> submit(Long id, EvaluationSubmitRequest request) {
         Evaluation evaluation = evaluationRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Évaluation non trouvée"));
@@ -73,7 +73,7 @@ public class EvaluationService {
         return map;
     }
 
-    private List<String> getStudentNames(String projectId) {
+    private List<String> getStudentNames(Long projectId) {
         List<Group> groups = groupRepository.findByProjectId(projectId);
         for (Group g : groups) {
             if (g.getStudents() != null && !g.getStudents().isEmpty()) {

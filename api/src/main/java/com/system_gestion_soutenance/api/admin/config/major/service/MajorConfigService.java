@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class MajorConfigService {
@@ -33,12 +32,11 @@ public class MajorConfigService {
         }
 
         Major major = new Major();
-        major.setId(UUID.randomUUID().toString());
         major.setName(request.name());
         return majorRepository.save(major);
     }
 
-    public Major update(String id, CreateMajorRequest request) {
+    public Major update(Long id, CreateMajorRequest request) {
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Filière non trouvée"));
@@ -47,7 +45,7 @@ public class MajorConfigService {
         return majorRepository.save(major);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Filière non trouvée"));

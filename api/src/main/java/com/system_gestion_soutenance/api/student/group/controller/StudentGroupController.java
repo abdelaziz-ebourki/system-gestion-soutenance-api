@@ -37,11 +37,11 @@ public class StudentGroupController {
 
     @PostMapping("/{id}/join")
     @Operation(summary = "Join an existing group by ID")
-    public Map<String, Object> joinGroup(@PathVariable String id) {
+    public Map<String, Object> joinGroup(@PathVariable Long id) {
         return studentGroupService.joinGroup(id, getCurrentUserId());
     }
 
-    private String getCurrentUserId() {
+    private Long getCurrentUserId() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

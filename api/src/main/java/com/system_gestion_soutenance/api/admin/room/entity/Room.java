@@ -12,7 +12,8 @@ import lombok.*;
 @AllArgsConstructor
 public class Room {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private int capacity;
     @ManyToOne
@@ -20,7 +21,7 @@ public class Room {
     @JsonIgnore
     private Department department;
 
-    public String getDepartmentId() {
+    public Long getDepartmentId() {
         return department != null ? department.getId() : null;
     }
 }

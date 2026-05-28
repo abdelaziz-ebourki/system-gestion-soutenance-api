@@ -21,7 +21,7 @@ public class CoordinatorDefenseController {
 
     @PostMapping("/{id}/cancel")
     @Operation(summary = "Cancel a scheduled defense")
-    public ResponseEntity<Map<String, String>> cancel(@PathVariable String id) {
+    public ResponseEntity<Map<String, String>> cancel(@PathVariable Long id) {
         scheduleService.cancelDefense(id);
         return ResponseEntity.ok(Map.of("message", "Soutenance annulée."));
     }

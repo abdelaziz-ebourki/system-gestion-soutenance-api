@@ -1,12 +1,12 @@
 package com.system_gestion_soutenance.api.coordinator.group.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
 public record CreateGroupRequest(
         String groupName,
-        @NotBlank String projectId,
-        List<String> studentIds,
-        String sessionId
+        @NotNull Long projectId,
+        List<Long> studentIds,
+        Long sessionId
 ) {}

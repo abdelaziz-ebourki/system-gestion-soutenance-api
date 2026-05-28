@@ -13,7 +13,8 @@ import lombok.*;
 @AllArgsConstructor
 public class Department {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String name;
     private String code;
     @ManyToOne
@@ -24,11 +25,11 @@ public class Department {
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
-    public String getHeadId() {
+    public Long getHeadId() {
         return head != null ? head.getId() : null;
     }
 
-    public String getFacultyId() {
+    public Long getFacultyId() {
         return faculty != null ? faculty.getId() : null;
     }
 }

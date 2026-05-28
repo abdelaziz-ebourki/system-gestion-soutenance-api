@@ -38,13 +38,13 @@ public class LevelConfigController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a level")
-    public Level update(@PathVariable String id, @Valid @RequestBody CreateLevelRequest request) {
+    public Level update(@PathVariable Long id, @Valid @RequestBody CreateLevelRequest request) {
         return levelConfigService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a level")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         levelConfigService.delete(id);
         return ResponseEntity.noContent().build();
     }

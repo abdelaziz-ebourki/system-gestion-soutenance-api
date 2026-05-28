@@ -18,7 +18,8 @@ import java.util.Map;
 public class DefenseSession {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "global_session_id", nullable = false)
@@ -66,11 +67,11 @@ public class DefenseSession {
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
 
-    public String getGlobalSessionId() {
+    public Long getGlobalSessionId() {
         return globalSession != null ? globalSession.getId() : null;
     }
 
-    public String getJuryRoleTemplateId() {
+    public Long getJuryRoleTemplateId() {
         return juryRoleTemplate != null ? juryRoleTemplate.getId() : null;
     }
 }

@@ -111,7 +111,6 @@ public class UserService {
             default -> createBaseUser(request, role);
         };
 
-        user.setId(UUID.randomUUID().toString());
         user.setPassword("");
         user.setActive(false);
         user.setVerificationToken(UUID.randomUUID().toString());
@@ -140,7 +139,6 @@ public class UserService {
                         "Rôle non supporté pour l'import en masse: " + role);
             };
 
-            user.setId(UUID.randomUUID().toString());
             user.setPassword("");
             user.setActive(false);
             user.setVerificationToken(UUID.randomUUID().toString());
@@ -153,7 +151,7 @@ public class UserService {
         return results;
     }
 
-    public UserDto updateUser(String id, UpdateUserRequest request) {
+    public UserDto updateUser(Long id, UpdateUserRequest request) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Utilisateur non trouvé"));
@@ -207,7 +205,7 @@ public class UserService {
         return UserDto.from(user);
     }
 
-    public void deleteUser(String id) {
+    public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Utilisateur non trouvé"));

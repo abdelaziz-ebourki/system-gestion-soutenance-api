@@ -20,7 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,7 +53,6 @@ public class DefenseSessionService {
     @Transactional
     public DefenseSession create(CreateDefenseSessionRequest request) {
         DefenseSession ds = new DefenseSession();
-        ds.setId(UUID.randomUUID().toString());
         ds.setName(request.name());
         ds.setDefenseType(parseDefenseType(request.defenseType()));
         ds.setStatus(request.status() != null ? parseStatus(request.status()) : DefenseSessionStatus.DRAFT);
@@ -87,7 +85,7 @@ public class DefenseSessionService {
     }
 
     @Transactional
-    public DefenseSession update(String id, CreateDefenseSessionRequest request) {
+    public DefenseSession update(Long id, CreateDefenseSessionRequest request) {
         DefenseSession ds = defenseSessionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session de soutenance non trouvée"));
 
@@ -127,14 +125,14 @@ public class DefenseSessionService {
         return defenseSessionRepository.save(ds);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         if (!defenseSessionRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Session de soutenance non trouvée");
         }
         defenseSessionRepository.deleteById(id);
     }
 
-    public DefenseSession transition(String id, String toStatus) {
+    public DefenseSession transition(Long id, String toStatus) {
         DefenseSession ds = defenseSessionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Session de soutenance non trouvée"));

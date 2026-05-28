@@ -50,7 +50,7 @@ public class AuthService {
                     "Veuillez activer votre compte via le lien de vérification envoyé à votre adresse email.");
         }
 
-        String token = jwtTokenProvider.generateToken(user.getId(), user.getRole().name());
+        String token = jwtTokenProvider.generateToken(String.valueOf(user.getId()), user.getRole().name());
         long expiresAt = System.currentTimeMillis() + jwtTokenProvider.getExpirationMs();
 
         return new LoginResponse(UserDto.from(user), token, expiresAt);

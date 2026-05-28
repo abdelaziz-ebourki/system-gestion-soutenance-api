@@ -34,14 +34,14 @@ public class TeacherScheduleService {
         this.groupRepository = groupRepository;
     }
 
-    public List<Map<String, Object>> getSchedule(String teacherId) {
-        Set<String> projectIdsForTeacher = new HashSet<>();
-        Map<String, String> projectRoles = new HashMap<>();
+    public List<Map<String, Object>> getSchedule(Long teacherId) {
+        Set<Long> projectIdsForTeacher = new HashSet<>();
+        Map<Long, String> projectRoles = new HashMap<>();
 
         for (Jury jury : juryRepository.findAll()) {
             for (JuryMember member : jury.getMembers()) {
                 if (member.getTeacher() != null && member.getTeacher().getId().equals(teacherId)) {
-                    String pid = jury.getProject().getId();
+                    Long pid = jury.getProject().getId();
                     projectIdsForTeacher.add(pid);
                     projectRoles.put(pid, member.getRoleName());
                 }
@@ -50,15 +50,15 @@ public class TeacherScheduleService {
 
         for (Project project : projectRepository.findAll()) {
             if (project.getSupervisor() != null && project.getSupervisor().getId().equals(teacherId)) {
-                String pid = project.getId();
+                Long pid = project.getId();
                 projectIdsForTeacher.add(pid);
                 projectRoles.putIfAbsent(pid, "supervisor");
             }
         }
 
-        Map<String, List<String>> projectStudents = new HashMap<>();
+        Map<Long, List<String>> projectStudents = new HashMap<>();
         for (Group group : groupRepository.findAll()) {
-            String pid = group.getProject().getId();
+            Long pid = group.getProject().getId();
             if (projectIdsForTeacher.contains(pid)) {
                 List<String> names = group.getStudents() != null
                         ? group.getStudents().stream()
@@ -69,7 +69,7 @@ public class TeacherScheduleService {
             }
         }
         for (Project project : projectRepository.findAll()) {
-            String pid = project.getId();
+            Long pid = project.getId();
             if (projectIdsForTeacher.contains(pid) && !projectStudents.containsKey(pid)) {
                 List<String> names = project.getStudents() != null
                         ? project.getStudents().stream()
@@ -82,7 +82,7 @@ public class TeacherScheduleService {
 
         List<Map<String, Object>> result = new ArrayList<>();
         for (SlotAssignment slot : slotAssignmentRepository.findAll()) {
-            String pid = slot.getProjectId();
+            Long pid = slot.getProjectId();
             if (pid == null || !projectIdsForTeacher.contains(pid)) continue;
 
             Project project = projectRepository.findById(pid).orElse(null);

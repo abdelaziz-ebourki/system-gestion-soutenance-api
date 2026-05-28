@@ -31,7 +31,7 @@ public class FacultyController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Get a faculty by ID")
-    public Faculty findById(@PathVariable String id) {
+    public Faculty findById(@PathVariable Long id) {
         return facultyService.findById(id);
     }
 
@@ -44,13 +44,13 @@ public class FacultyController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a faculty")
-    public Faculty update(@PathVariable String id, @Valid @RequestBody CreateFacultyRequest request) {
+    public Faculty update(@PathVariable Long id, @Valid @RequestBody CreateFacultyRequest request) {
         return facultyService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a faculty")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         facultyService.delete(id);
         return ResponseEntity.noContent().build();
     }

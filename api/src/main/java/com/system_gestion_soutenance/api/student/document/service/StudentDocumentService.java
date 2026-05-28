@@ -13,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,11 +25,11 @@ public class StudentDocumentService {
         this.repository = repository;
     }
 
-    public List<StudentDocument> findByStudent(String studentId) {
+    public List<StudentDocument> findByStudent(Long studentId) {
         return repository.findByStudentId(studentId);
     }
 
-    public StudentDocument upload(String id, MultipartFile file) {
+    public StudentDocument upload(Long id, MultipartFile file) {
         StudentDocument doc = repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Document non trouvé"));

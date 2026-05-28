@@ -38,13 +38,13 @@ public class SessionController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a session")
-    public Session update(@PathVariable String id, @Valid @RequestBody CreateSessionRequest request) {
+    public Session update(@PathVariable Long id, @Valid @RequestBody CreateSessionRequest request) {
         return sessionService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a session")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         sessionService.delete(id);
         return ResponseEntity.noContent().build();
     }

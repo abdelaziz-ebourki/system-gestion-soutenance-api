@@ -15,16 +15,17 @@ import java.time.LocalDateTime;
 public class Evaluation {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "teacher_id", nullable = false)
-    private String teacherId;
+    private Long teacherId;
 
     @Column(name = "defense_session_id", nullable = false)
-    private String defenseSessionId;
+    private Long defenseSessionId;
 
     @Column(name = "project_id", nullable = false)
-    private String projectId;
+    private Long projectId;
 
     @Column(nullable = false)
     private String role;

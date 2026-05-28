@@ -13,7 +13,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,7 +42,6 @@ public class JuryRoleTemplateService {
         validateRoleNames(request.roles());
 
         JuryRoleTemplate template = new JuryRoleTemplate();
-        template.setId(UUID.randomUUID().toString());
         template.setName(request.name());
         template.setDefenseType(DefenseType.valueOf(request.defenseType().toUpperCase()));
         template.setRoles(request.roles().stream()
@@ -53,7 +51,7 @@ public class JuryRoleTemplateService {
     }
 
     @Transactional
-    public JuryRoleTemplate update(String id, CreateJuryRoleTemplateRequest request) {
+    public JuryRoleTemplate update(Long id, CreateJuryRoleTemplateRequest request) {
         JuryRoleTemplate template = juryRoleTemplateRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Template de rôle jury non trouvé"));
@@ -70,7 +68,7 @@ public class JuryRoleTemplateService {
     }
 
     @Transactional
-    public void delete(String id) {
+    public void delete(Long id) {
         JuryRoleTemplate template = juryRoleTemplateRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Template de rôle jury non trouvé"));

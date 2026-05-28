@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class DepartmentService {
@@ -37,7 +36,7 @@ public class DepartmentService {
         return departmentRepository.findAll();
     }
 
-    public Department findById(String id) {
+    public Department findById(Long id) {
         return departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Département non trouvé"));
@@ -50,7 +49,6 @@ public class DepartmentService {
         }
 
         Department department = new Department();
-        department.setId(UUID.randomUUID().toString());
         department.setName(request.name());
         department.setCode(request.code());
 
@@ -59,7 +57,7 @@ public class DepartmentService {
                         "Faculté introuvable"));
         department.setFaculty(faculty);
 
-        if (request.headId() != null && !request.headId().isBlank()) {
+        if (request.headId() != null) {
             Teacher head = teacherRepository.findById(request.headId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             "Enseignant responsable introuvable"));
@@ -69,7 +67,7 @@ public class DepartmentService {
         return departmentRepository.save(department);
     }
 
-    public Department update(String id, CreateDepartmentRequest request) {
+    public Department update(Long id, CreateDepartmentRequest request) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Département non trouvé"));
@@ -82,7 +80,7 @@ public class DepartmentService {
                         "Faculté introuvable"));
         department.setFaculty(faculty);
 
-        if (request.headId() != null && !request.headId().isBlank()) {
+        if (request.headId() != null) {
             Teacher head = teacherRepository.findById(request.headId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             "Enseignant responsable introuvable"));
@@ -94,7 +92,7 @@ public class DepartmentService {
         return departmentRepository.save(department);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Département non trouvé"));

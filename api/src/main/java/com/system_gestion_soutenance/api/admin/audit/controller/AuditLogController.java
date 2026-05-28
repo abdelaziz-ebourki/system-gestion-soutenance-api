@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/admin/audit-logs")
@@ -35,7 +34,6 @@ public class AuditLogController {
     @Operation(summary = "Create an audit log entry")
     public ResponseEntity<AuditLog> create(@Valid @RequestBody AuditLogRequest request) {
         AuditLog log = new AuditLog();
-        log.setId(UUID.randomUUID().toString());
         log.setAction(request.action());
         log.setEntity(request.entity());
         log.setEntityId(request.entityId());

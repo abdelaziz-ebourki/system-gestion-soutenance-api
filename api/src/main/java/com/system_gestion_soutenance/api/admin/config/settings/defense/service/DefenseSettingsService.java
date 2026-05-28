@@ -18,13 +18,13 @@ public class DefenseSettingsService {
     }
 
     public DefenseSettings get() {
-        return repository.findById("default")
+        return repository.findById(1L)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Paramètres de soutenance non configurés"));
     }
 
     public DefenseSettings update(Map<String, Object> updates) {
-        DefenseSettings settings = repository.findById("default")
+        DefenseSettings settings = repository.findById(1L)
                 .orElse(new DefenseSettings());
 
         if (updates.containsKey("startTime"))
@@ -40,7 +40,7 @@ public class DefenseSettingsService {
         if (updates.containsKey("groupCreationEndDate"))
             settings.setGroupCreationEndDate((String) updates.get("groupCreationEndDate"));
 
-        settings.setId("default");
+        settings.setId(1L);
         return repository.save(settings);
     }
 

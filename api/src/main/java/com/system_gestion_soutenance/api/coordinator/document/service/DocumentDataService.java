@@ -46,10 +46,10 @@ public class DocumentDataService {
     }
 
     public List<Map<String, Object>> evaluationSheets(DefenseIdsRequest request) {
-        List<String> ids = resolveDefenseIds(request);
+        List<Long> ids = resolveDefenseIds(request);
         List<Map<String, Object>> result = new ArrayList<>();
 
-        for (String id : ids) {
+        for (Long id : ids) {
             SlotAssignment slot = slotAssignmentRepository.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Soutenance non trouvée: " + id));
@@ -66,7 +66,7 @@ public class DocumentDataService {
         return result;
     }
 
-    public Map<String, Object> attendanceList(String defenseSessionId) {
+    public Map<String, Object> attendanceList(Long defenseSessionId) {
         DefenseSession ds = defenseSessionRepository.findById(defenseSessionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Session de soutenance non trouvée"));
@@ -81,10 +81,10 @@ public class DocumentDataService {
     }
 
     public List<Map<String, Object>> juryConvocations(DefenseIdsRequest request) {
-        List<String> ids = resolveDefenseIds(request);
+        List<Long> ids = resolveDefenseIds(request);
         List<Map<String, Object>> result = new ArrayList<>();
 
-        for (String id : ids) {
+        for (Long id : ids) {
             SlotAssignment slot = slotAssignmentRepository.findById(id)
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                             "Soutenance non trouvée: " + id));
@@ -115,7 +115,7 @@ public class DocumentDataService {
         return result;
     }
 
-    public Map<String, Object> schedule(String defenseSessionId) {
+    public Map<String, Object> schedule(Long defenseSessionId) {
         DefenseSession ds = defenseSessionRepository.findById(defenseSessionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Session de soutenance non trouvée"));
@@ -129,14 +129,14 @@ public class DocumentDataService {
         return result;
     }
 
-    public Map<String, Object> procesVerbal(String projectId) {
+    public Map<String, Object> procesVerbal(Long projectId) {
         Map<String, Object> result = new LinkedHashMap<>();
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Projet non trouvé: " + projectId));
 
-        GeneralSettings settings = generalSettingsRepository.findById("default").orElse(null);
+        GeneralSettings settings = generalSettingsRepository.findById(1L).orElse(null);
         Map<String, Object> settingsMap = new LinkedHashMap<>();
         if (settings != null) {
             settingsMap.put("institutionName", settings.getInstitutionName());
@@ -174,8 +174,8 @@ public class DocumentDataService {
         return result;
     }
 
-    private List<String> resolveDefenseIds(DefenseIdsRequest request) {
-        if (request.projectId() != null && !request.projectId().isBlank()) {
+    private List<Long> resolveDefenseIds(DefenseIdsRequest request) {
+        if (request.projectId() != null) {
             List<SlotAssignment> slots = slotAssignmentRepository.findByProjectId(request.projectId());
             if (slots.isEmpty()) {
                 throw new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -247,7 +247,7 @@ public class DocumentDataService {
         return slots;
     }
 
-    private List<String> getStudentNames(String projectId) {
+    private List<String> getStudentNames(Long projectId) {
         List<Group> groups = groupRepository.findByProjectId(projectId);
         for (Group g : groups) {
             if (g.getStudents() != null && !g.getStudents().isEmpty()) {
@@ -265,12 +265,12 @@ public class DocumentDataService {
         return List.of();
     }
 
-    private String findDefenseSessionName(String projectId) {
+    private String findDefenseSessionName(Long projectId) {
         DefenseSession ds = findDefenseSession(projectId);
         return ds != null ? ds.getName() : null;
     }
 
-    private DefenseSession findDefenseSession(String projectId) {
+    private DefenseSession findDefenseSession(Long projectId) {
         List<Group> groups = groupRepository.findByProjectId(projectId);
         for (Group g : groups) {
             if (g.getSessionId() != null) {

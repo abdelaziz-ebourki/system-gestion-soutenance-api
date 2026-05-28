@@ -59,7 +59,7 @@ public class ScheduleService {
         List<SlotAssignment> slots = slotAssignmentRepository.findAll();
         Map<String, Map<String, Object>> result = new LinkedHashMap<>();
         for (SlotAssignment slot : slots) {
-            result.put(slot.getId(), toResponse(slot));
+            result.put(slot.getId().toString(), toResponse(slot));
         }
         return result;
     }
@@ -73,16 +73,15 @@ public class ScheduleService {
             Map<String, Object> data = entry.getValue();
 
             SlotAssignment slot = new SlotAssignment();
-            slot.setId(slotId);
             slot.setTitle((String) data.get("title"));
             slot.setDate((String) data.get("date"));
             slot.setTime((String) data.get("time"));
 
             if (data.containsKey("projectId") && data.get("projectId") != null)
-                slot.setProjectId((String) data.get("projectId"));
+                slot.setProjectId(toLong(data.get("projectId")));
 
             if (data.containsKey("roomId") && data.get("roomId") != null) {
-                Room room = roomRepository.findById((String) data.get("roomId"))
+                Room room = roomRepository.findById(toLong(data.get("roomId")))
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
                                 "Salle introuvable: " + data.get("roomId")));
                 slot.setRoom(room);
@@ -94,12 +93,12 @@ public class ScheduleService {
         return getSchedule();
     }
 
-    public Map<String, Map<String, Object>> autoGenerate(String defenseSessionId) {
+    public Map<String, Map<String, Object>> autoGenerate(Long defenseSessionId) {
         DefenseSession ds = defenseSessionRepository.findById(defenseSessionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Session de soutenance non trouvée"));
 
-        DefenseSettings settings = defenseSettingsRepository.findById("default")
+        DefenseSettings settings = defenseSettingsRepository.findById(1L)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Paramètres de soutenance non trouvés"));
 
@@ -125,7 +124,7 @@ public class ScheduleService {
         }
 
         Map<String, Map<String, Object>> schedule = new LinkedHashMap<>();
-        Set<String> assignedProjects = new HashSet<>();
+        Set<Long> assignedProjects = new HashSet<>();
 
         LocalDate current = ds.getStartDate();
         while (!current.isAfter(ds.getEndDate())) {
@@ -163,7 +162,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void publish(String defenseSessionId) {
+    public void publish(Long defenseSessionId) {
         DefenseSession ds = defenseSessionRepository.findById(defenseSessionId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Session de soutenance non trouvée"));
@@ -179,7 +178,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void cancelDefense(String slotId) {
+    public void cancelDefense(Long slotId) {
         SlotAssignment slot = slotAssignmentRepository.findById(slotId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Créneau de soutenance non trouvé"));
@@ -193,7 +192,6 @@ public class ScheduleService {
 
     private void createNotification(String type, String title, String message, String actionLink) {
         AppNotification notification = new AppNotification();
-        notification.setId(UUID.randomUUID().toString());
         notification.setType(type);
         notification.setTitle(title);
         notification.setMessage(message);
@@ -203,7 +201,7 @@ public class ScheduleService {
         notificationRepository.save(notification);
     }
 
-    private int getStudentCountForProject(String projectId) {
+    private int getStudentCountForProject(Long projectId) {
         var groups = groupRepository.findByProjectId(projectId);
         for (var g : groups) {
             if (g.getStudents() != null && !g.getStudents().isEmpty())
@@ -213,6 +211,12 @@ public class ScheduleService {
         if (project != null && project.getStudents() != null)
             return project.getStudents().size();
         return 0;
+    }
+
+    private Long toLong(Object value) {
+        if (value instanceof Number) return ((Number) value).longValue();
+        if (value instanceof String) return Long.parseLong((String) value);
+        return null;
     }
 
     private Map<String, Object> toResponse(SlotAssignment slot) {

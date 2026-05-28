@@ -14,7 +14,8 @@ import lombok.NoArgsConstructor;
 public class SlotAssignment {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     private String title;
@@ -26,7 +27,7 @@ public class SlotAssignment {
     private String time;
 
     @Column(name = "project_id")
-    private String projectId;
+    private Long projectId;
 
     @ManyToOne
     @JoinColumn(name = "room_id")

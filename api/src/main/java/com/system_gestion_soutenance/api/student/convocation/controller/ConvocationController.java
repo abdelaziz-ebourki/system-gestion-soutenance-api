@@ -30,7 +30,7 @@ public class ConvocationController {
     @GetMapping
     @Operation(summary = "Get the convocation PDF for the connected student")
     public ResponseEntity<byte[]> getConvocation() {
-        String studentId = getCurrentUserId();
+        Long studentId = getCurrentUserId();
 
         Map<String, Object> defense;
         try {
@@ -54,7 +54,7 @@ public class ConvocationController {
         return new ResponseEntity<>(content, headers, HttpStatus.OK);
     }
 
-    private String getCurrentUserId() {
+    private Long getCurrentUserId() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

@@ -26,7 +26,7 @@ public class StudentDefenseController {
         return studentDefenseService.getDefense(getCurrentUserId());
     }
 
-    private String getCurrentUserId() {
+    private Long getCurrentUserId() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

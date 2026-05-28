@@ -38,13 +38,13 @@ public class GradeConfigController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a grade")
-    public Grade update(@PathVariable String id, @Valid @RequestBody CreateGradeRequest request) {
+    public Grade update(@PathVariable Long id, @Valid @RequestBody CreateGradeRequest request) {
         return gradeConfigService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a grade")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         gradeConfigService.delete(id);
         return ResponseEntity.noContent().build();
     }

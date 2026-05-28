@@ -31,12 +31,12 @@ public class EvaluationController {
 
     @PostMapping("/{id}")
     @Operation(summary = "Submit an evaluation score and comment")
-    public Map<String, Object> submit(@PathVariable String id,
+    public Map<String, Object> submit(@PathVariable Long id,
                                        @Valid @RequestBody EvaluationSubmitRequest request) {
         return evaluationService.submit(id, request);
     }
 
-    private String getCurrentUserId() {
+    private Long getCurrentUserId() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

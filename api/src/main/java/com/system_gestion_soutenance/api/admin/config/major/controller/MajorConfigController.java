@@ -38,13 +38,13 @@ public class MajorConfigController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a major")
-    public Major update(@PathVariable String id, @Valid @RequestBody CreateMajorRequest request) {
+    public Major update(@PathVariable Long id, @Valid @RequestBody CreateMajorRequest request) {
         return majorConfigService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a major")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         majorConfigService.delete(id);
         return ResponseEntity.noContent().build();
     }

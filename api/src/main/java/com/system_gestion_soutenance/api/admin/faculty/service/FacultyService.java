@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class FacultyService {
@@ -26,14 +25,13 @@ public class FacultyService {
         return facultyRepository.findAll();
     }
 
-    public Faculty findById(String id) {
+    public Faculty findById(Long id) {
         return facultyRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Faculté non trouvée"));
     }
 
     public Faculty create(CreateFacultyRequest request) {
         Faculty faculty = new Faculty();
-        faculty.setId(UUID.randomUUID().toString());
         faculty.setName(request.name());
         faculty.setCode(request.code());
         faculty.setDeanId(request.deanId());
@@ -41,7 +39,7 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
-    public Faculty update(String id, CreateFacultyRequest request) {
+    public Faculty update(Long id, CreateFacultyRequest request) {
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Faculté non trouvée"));
 
@@ -52,7 +50,7 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Faculté non trouvée"));
 

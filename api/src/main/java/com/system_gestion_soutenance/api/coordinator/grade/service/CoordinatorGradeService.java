@@ -41,10 +41,10 @@ public class CoordinatorGradeService {
         List<Map<String, Object>> grades = new ArrayList<>();
 
         for (Jury jury : juryRepository.findAll()) {
-            String projectId = jury.getProject().getId();
+            Long projectId = jury.getProject().getId();
             List<Evaluation> evaluations = evaluationRepository.findByProjectId(projectId);
 
-            String defenseSessionId = resolveDefenseSessionId(projectId, evaluations);
+            Long defenseSessionId = resolveDefenseSessionId(projectId, evaluations);
             Map<String, Integer> coefficients = resolveCoefficients(defenseSessionId);
 
             String defenseDate = findDefenseDate(projectId);
@@ -70,7 +70,7 @@ public class CoordinatorGradeService {
         return grades;
     }
 
-    private String resolveDefenseSessionId(String projectId, List<Evaluation> evaluations) {
+    private Long resolveDefenseSessionId(Long projectId, List<Evaluation> evaluations) {
         if (!evaluations.isEmpty()) {
             return evaluations.get(0).getDefenseSessionId();
         }
@@ -81,14 +81,14 @@ public class CoordinatorGradeService {
                 .orElse(null);
     }
 
-    private Map<String, Integer> resolveCoefficients(String defenseSessionId) {
+    private Map<String, Integer> resolveCoefficients(Long defenseSessionId) {
         if (defenseSessionId == null) return Map.of();
         return defenseSessionRepository.findById(defenseSessionId)
                 .map(DefenseSession::getEvaluationCoefficients)
                 .orElse(Map.of());
     }
 
-    private String findDefenseDate(String projectId) {
+    private String findDefenseDate(Long projectId) {
         for (SlotAssignment slot : slotAssignmentRepository.findAll()) {
             if (projectId.equals(slot.getProjectId())) {
                 return slot.getDate();

@@ -38,13 +38,13 @@ public class ProjectController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a project")
-    public Map<String, Object> update(@PathVariable String id, @RequestBody Map<String, Object> updates) {
+    public Map<String, Object> update(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         return projectService.update(id, updates);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a project")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         projectService.delete(id);
         return ResponseEntity.noContent().build();
     }

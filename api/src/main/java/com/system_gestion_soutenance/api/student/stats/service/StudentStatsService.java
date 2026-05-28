@@ -27,11 +27,11 @@ public class StudentStatsService {
         this.slotAssignmentRepository = slotAssignmentRepository;
     }
 
-    public Map<String, Object> getStats(String studentId) {
+    public Map<String, Object> getStats(Long studentId) {
         List<StudentDocument> docs = documentRepository.findByStudentId(studentId);
         long missing = docs.stream().filter(d -> "missing".equals(d.getStatus())).count();
 
-        String projectId = null;
+        Long projectId = null;
         int groupMembers = 0;
         for (Group g : groupRepository.findAll()) {
             if (g.getStudents() != null &&
@@ -42,7 +42,7 @@ public class StudentStatsService {
             }
         }
 
-        final String pid = projectId;
+        final Long pid = projectId;
         boolean hasSchedule = pid != null &&
                 slotAssignmentRepository.findAll().stream()
                         .anyMatch(s -> pid.equals(s.getProjectId()));

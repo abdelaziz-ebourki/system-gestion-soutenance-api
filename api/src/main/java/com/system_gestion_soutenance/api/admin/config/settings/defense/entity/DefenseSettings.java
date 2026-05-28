@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class DefenseSettings {
 
     @Id
-    private String id = "default";
+    private Long id = 1L;
 
     @Column(name = "start_time")
     private String startTime;

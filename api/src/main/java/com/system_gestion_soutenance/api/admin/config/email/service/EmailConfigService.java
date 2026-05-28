@@ -18,13 +18,13 @@ public class EmailConfigService {
     }
 
     public EmailConfig get() {
-        return repository.findById("default")
+        return repository.findById(1L)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Configuration email non trouvée"));
     }
 
     public EmailConfig update(Map<String, Object> updates) {
-        EmailConfig config = repository.findById("default")
+        EmailConfig config = repository.findById(1L)
                 .orElse(new EmailConfig());
 
         if (updates.containsKey("host"))
@@ -42,7 +42,7 @@ public class EmailConfigService {
         if (updates.containsKey("encryption"))
             config.setEncryption((String) updates.get("encryption"));
 
-        config.setId("default");
+        config.setId(1L);
         return repository.save(config);
     }
 

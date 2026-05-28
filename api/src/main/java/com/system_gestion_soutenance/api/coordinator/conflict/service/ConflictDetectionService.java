@@ -60,7 +60,7 @@ public class ConflictDetectionService {
             entry.put("time", existing.getTime());
             entry.put("projectId", existing.getProjectId());
             entry.put("roomId", existing.getRoom() != null ? existing.getRoom().getId() : null);
-            mergedSchedule.put(existing.getId(), entry);
+            mergedSchedule.put(String.valueOf(existing.getId()), entry);
         }
 
         mergedSchedule.putAll(proposedSchedule);
@@ -135,7 +135,7 @@ public class ConflictDetectionService {
             String roomId = (String) data.get("roomId");
             if (projectId == null || roomId == null) continue;
 
-            Room room = roomRepository.findById(roomId).orElse(null);
+            Room room = roomRepository.findById(Long.valueOf(roomId)).orElse(null);
             if (room == null) continue;
 
             int studentCount = getStudentCountForProject(projectId);
@@ -152,7 +152,7 @@ public class ConflictDetectionService {
         List<Map<String, Object>> conflicts = new ArrayList<>();
         if (defenseSessionId == null) return conflicts;
 
-        DefenseSession ds = defenseSessionRepository.findById(defenseSessionId).orElse(null);
+        DefenseSession ds = defenseSessionRepository.findById(Long.valueOf(defenseSessionId)).orElse(null);
         if (ds == null) return conflicts;
 
         for (Map.Entry<String, Map<String, Object>> entry : schedule.entrySet()) {
@@ -213,10 +213,10 @@ public class ConflictDetectionService {
             String date = (String) data.get("date");
             if (projectId == null || date == null) continue;
 
-            Project project = projectRepository.findById(projectId).orElse(null);
+            Project project = projectRepository.findById(Long.valueOf(projectId)).orElse(null);
             if (project == null || project.getSupervisor() == null) continue;
 
-            String supervisorId = project.getSupervisor().getId();
+            String supervisorId = String.valueOf(project.getSupervisor().getId());
             String key = date + "|" + supervisorId;
 
             if (dateSupervisorSlot.containsKey(key)) {
@@ -235,7 +235,7 @@ public class ConflictDetectionService {
         int breakDuration = 15;
 
         if (defenseSessionId != null) {
-            DefenseSession ds = defenseSessionRepository.findById(defenseSessionId).orElse(null);
+            DefenseSession ds = defenseSessionRepository.findById(Long.valueOf(defenseSessionId)).orElse(null);
             if (ds != null) breakDuration = ds.getBreakDuration();
         }
 
@@ -302,12 +302,12 @@ public class ConflictDetectionService {
     }
 
     private int getStudentCountForProject(String projectId) {
-        var groups = groupRepository.findByProjectId(projectId);
+        var groups = groupRepository.findByProjectId(Long.valueOf(projectId));
         for (var g : groups) {
             if (g.getStudents() != null && !g.getStudents().isEmpty())
                 return g.getStudents().size();
         }
-        Project project = projectRepository.findById(projectId).orElse(null);
+        Project project = projectRepository.findById(Long.valueOf(projectId)).orElse(null);
         if (project != null && project.getStudents() != null)
             return project.getStudents().size();
         return 0;
@@ -315,10 +315,10 @@ public class ConflictDetectionService {
 
     private Set<String> getJuryTeacherIds(String projectId) {
         Set<String> ids = new HashSet<>();
-        for (Jury jury : juryRepository.findByProjectId(projectId)) {
+        for (Jury jury : juryRepository.findByProjectId(Long.valueOf(projectId))) {
             for (JuryMember member : jury.getMembers()) {
                 if (member.getTeacher() != null) {
-                    ids.add(member.getTeacher().getId());
+                    ids.add(String.valueOf(member.getTeacher().getId()));
                 }
             }
         }

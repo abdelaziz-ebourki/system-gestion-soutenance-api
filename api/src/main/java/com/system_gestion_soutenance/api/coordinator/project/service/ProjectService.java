@@ -58,7 +58,6 @@ public class ProjectService {
         }
 
         Project project = new Project();
-        project.setId(UUID.randomUUID().toString());
         project.setTitle(request.title());
         project.setDescription(request.description());
         project.setDefenseType(request.defenseType());
@@ -69,7 +68,7 @@ public class ProjectService {
         return toResponse(projectRepository.save(project));
     }
 
-    public Map<String, Object> update(String id, Map<String, Object> updates) {
+    public Map<String, Object> update(Long id, Map<String, Object> updates) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Projet non trouvé"));
@@ -83,21 +82,24 @@ public class ProjectService {
         if (updates.containsKey("status"))
             project.setStatus((String) updates.get("status"));
         if (updates.containsKey("supervisorId")) {
-            Teacher supervisor = teacherRepository.findById((String) updates.get("supervisorId"))
+            Teacher supervisor = teacherRepository.findById(Long.parseLong((String) updates.get("supervisorId")))
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             "Encadrant introuvable"));
             project.setSupervisor(supervisor);
         }
         if (updates.containsKey("studentIds")) {
             @SuppressWarnings("unchecked")
-            List<String> ids = (List<String>) updates.get("studentIds");
+            List<Object> rawIds = (List<Object>) updates.get("studentIds");
+            List<Long> ids = rawIds.stream()
+                    .map(v -> v instanceof Number ? ((Number) v).longValue() : Long.parseLong(v.toString()))
+                    .collect(Collectors.toList());
             project.setStudents(studentRepository.findAllById(ids));
         }
 
         return toResponse(projectRepository.save(project));
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         Project project = projectRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Projet non trouvé"));
 
@@ -124,7 +126,7 @@ public class ProjectService {
         map.put("description", project.getDescription());
 
         List<String> studentIds = project.getStudents() != null
-                ? project.getStudents().stream().map(Student::getId).collect(Collectors.toList())
+                ? project.getStudents().stream().map(s -> String.valueOf(s.getId())).collect(Collectors.toList())
                 : List.of();
         List<String> studentNames = project.getStudents() != null
                 ? project.getStudents().stream()

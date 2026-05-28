@@ -4,7 +4,10 @@ import com.system_gestion_soutenance.api.coordinator.unavailability.entity.Unava
 import com.system_gestion_soutenance.api.coordinator.unavailability.repository.UnavailabilityRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class TeacherUnavailabilityService {
@@ -15,7 +18,7 @@ public class TeacherUnavailabilityService {
         this.repository = repository;
     }
 
-    public Map<String, Object> getByTeacher(String teacherId) {
+    public Map<String, Object> getByTeacher(Long teacherId) {
         Map<String, List<String>> slotsByDate = new LinkedHashMap<>();
         for (Unavailability u : repository.findAll()) {
             if (u.getTeacherId().equals(teacherId)) {
@@ -27,7 +30,7 @@ public class TeacherUnavailabilityService {
         return result;
     }
 
-    public Map<String, Object> saveForTeacher(String teacherId, Map<String, List<String>> slotsByDate) {
+    public Map<String, Object> saveForTeacher(Long teacherId, Map<String, List<String>> slotsByDate) {
         List<Unavailability> existing = new ArrayList<>();
         for (Unavailability u : repository.findAll()) {
             if (u.getTeacherId().equals(teacherId)) {
@@ -38,7 +41,6 @@ public class TeacherUnavailabilityService {
 
         for (Map.Entry<String, List<String>> entry : slotsByDate.entrySet()) {
             Unavailability u = new Unavailability();
-            u.setId(UUID.randomUUID().toString());
             u.setTeacherId(teacherId);
             u.setDate(entry.getKey());
             u.setSlots(entry.getValue());

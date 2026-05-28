@@ -28,7 +28,7 @@ public class NotificationController {
 
     @PatchMapping("/{id}/read")
     @Operation(summary = "Mark a notification as read")
-    public ResponseEntity<Void> markRead(@PathVariable String id) {
+    public ResponseEntity<Void> markRead(@PathVariable Long id) {
         repository.findById(id).ifPresent(n -> {
             n.setRead(true);
             repository.save(n);

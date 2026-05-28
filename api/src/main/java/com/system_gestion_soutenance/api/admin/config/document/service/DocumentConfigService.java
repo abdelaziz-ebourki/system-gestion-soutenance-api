@@ -18,13 +18,13 @@ public class DocumentConfigService {
     }
 
     public DocumentConfig get() {
-        return repository.findById("default")
+        return repository.findById(1L)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Configuration des documents non trouvée"));
     }
 
     public DocumentConfig update(Map<String, Object> updates) {
-        DocumentConfig config = repository.findById("default")
+        DocumentConfig config = repository.findById(1L)
                 .orElse(new DocumentConfig());
 
         if (updates.containsKey("maxFileSizeMb"))
@@ -34,7 +34,7 @@ public class DocumentConfigService {
         if (updates.containsKey("versionLimit"))
             config.setVersionLimit(toInt(updates.get("versionLimit")));
 
-        config.setId("default");
+        config.setId(1L);
         return repository.save(config);
     }
 

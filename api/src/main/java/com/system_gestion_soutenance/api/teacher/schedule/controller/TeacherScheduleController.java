@@ -27,7 +27,7 @@ public class TeacherScheduleController {
         return service.getSchedule(getCurrentUserId());
     }
 
-    private String getCurrentUserId() {
+    private Long getCurrentUserId() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

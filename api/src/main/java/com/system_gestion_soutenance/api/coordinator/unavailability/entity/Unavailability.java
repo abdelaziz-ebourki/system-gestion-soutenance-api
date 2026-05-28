@@ -15,10 +15,11 @@ import java.util.List;
 public class Unavailability {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "teacher_id", nullable = false)
-    private String teacherId;
+    private Long teacherId;
 
     @Column(nullable = false)
     private String date;

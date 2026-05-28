@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class LevelConfigService {
@@ -33,12 +32,11 @@ public class LevelConfigService {
         }
 
         Level level = new Level();
-        level.setId(UUID.randomUUID().toString());
         level.setName(request.name());
         return levelRepository.save(level);
     }
 
-    public Level update(String id, CreateLevelRequest request) {
+    public Level update(Long id, CreateLevelRequest request) {
         Level level = levelRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Niveau non trouvé"));
@@ -47,7 +45,7 @@ public class LevelConfigService {
         return levelRepository.save(level);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         Level level = levelRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Niveau non trouvé"));

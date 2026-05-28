@@ -19,7 +19,8 @@ import java.util.List;
 public class Jury {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -34,7 +35,7 @@ public class Jury {
     @JsonIgnore
     private List<JuryMember> members = new ArrayList<>();
 
-    public String getTemplateId() {
+    public Long getTemplateId() {
         return template != null ? template.getId() : null;
     }
 

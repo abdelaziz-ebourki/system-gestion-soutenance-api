@@ -28,7 +28,7 @@ public class CoordinatorDefenseSessionController {
 
     @PostMapping("/{id}/transition")
     @Operation(summary = "Transition a defense session to a new status")
-    public DefenseSession transition(@PathVariable String id, @RequestBody Map<String, String> body) {
+    public DefenseSession transition(@PathVariable Long id, @RequestBody Map<String, String> body) {
         return service.transition(id, body.get("toStatus"));
     }
 }

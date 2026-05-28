@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 public record CreateFacultyRequest(
         @NotBlank String name,
         @NotBlank String code,
-        String deanId,
+        Long deanId,
         String logoUrl
 ) {}

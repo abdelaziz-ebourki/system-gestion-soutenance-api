@@ -123,13 +123,13 @@ public class UserAdminController {
 
     @PutMapping("/users/{id}")
     @Operation(summary = "Update a user")
-    public UserDto updateUser(@PathVariable String id, @RequestBody UpdateUserRequest request) {
+    public UserDto updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
         return userService.updateUser(id, request);
     }
 
     @DeleteMapping("/users/{id}")
     @Operation(summary = "Delete a user")
-    public ResponseEntity<Void> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }

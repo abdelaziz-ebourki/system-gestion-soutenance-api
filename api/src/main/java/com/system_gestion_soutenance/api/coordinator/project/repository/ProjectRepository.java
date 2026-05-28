@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ProjectRepository extends JpaRepository<Project, String> {
-    List<Project> findBySupervisorId(String supervisorId);
-    List<Project> findByStudentsId(String studentId);
+public interface ProjectRepository extends JpaRepository<Project, Long> {
+    List<Project> findBySupervisorId(Long supervisorId);
+    List<Project> findByStudentsId(Long studentId);
 }

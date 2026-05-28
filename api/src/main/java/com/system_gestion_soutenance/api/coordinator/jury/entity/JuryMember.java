@@ -15,7 +15,8 @@ import lombok.NoArgsConstructor;
 public class JuryMember {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "jury_id", nullable = false)
@@ -29,7 +30,7 @@ public class JuryMember {
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 
-    public String getTeacherId() {
+    public Long getTeacherId() {
         return teacher != null ? teacher.getId() : null;
     }
 }

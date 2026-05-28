@@ -11,7 +11,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class SessionService {
@@ -30,7 +29,6 @@ public class SessionService {
 
     public Session create(CreateSessionRequest request) {
         Session session = new Session();
-        session.setId(UUID.randomUUID().toString());
         session.setName(request.name());
         session.setType(request.type());
         session.setStatus(parseStatus(request.status()));
@@ -39,7 +37,7 @@ public class SessionService {
         return sessionRepository.save(session);
     }
 
-    public Session update(String id, CreateSessionRequest request) {
+    public Session update(Long id, CreateSessionRequest request) {
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session non trouvée"));
 
@@ -51,7 +49,7 @@ public class SessionService {
         return sessionRepository.save(session);
     }
 
-    public void delete(String id) {
+    public void delete(Long id) {
         Session session = sessionRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Session non trouvée"));
 

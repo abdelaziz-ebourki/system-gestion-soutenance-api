@@ -1,7 +1,7 @@
 package com.system_gestion_soutenance.api.coordinator.document.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public record SessionRequest(
-        @NotBlank String defenseSessionId
+        @NotNull Long defenseSessionId
 ) {}

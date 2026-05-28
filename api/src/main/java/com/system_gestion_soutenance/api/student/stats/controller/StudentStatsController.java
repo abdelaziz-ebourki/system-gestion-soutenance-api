@@ -26,7 +26,7 @@ public class StudentStatsController {
         return statsService.getStats(getCurrentUserId());
     }
 
-    private String getCurrentUserId() {
+    private Long getCurrentUserId() {
         return ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
     }
 }

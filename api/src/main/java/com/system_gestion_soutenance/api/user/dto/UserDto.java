@@ -5,31 +5,31 @@ import com.system_gestion_soutenance.api.user.entity.Teacher;
 import com.system_gestion_soutenance.api.user.entity.User;
 
 public record UserDto(
-        String id,
+        Long id,
         String email,
         String role,
         String lastName,
         String firstName,
         boolean isActive,
         String cne,
-        String majorId,
+        Long majorId,
         String majorName,
-        String levelId,
+        Long levelId,
         String levelName,
-        String gradeId,
+        Long gradeId,
         String gradeName,
-        String departmentId,
+        Long departmentId,
         String departmentName
 ) {
     public static UserDto from(User user) {
         String cne = null;
-        String majorId = null;
+        Long majorId = null;
         String majorName = null;
-        String levelId = null;
+        Long levelId = null;
         String levelName = null;
-        String gradeId = null;
+        Long gradeId = null;
         String gradeName = null;
-        String departmentId = null;
+        Long departmentId = null;
         String departmentName = null;
 
         if (user instanceof Student student) {

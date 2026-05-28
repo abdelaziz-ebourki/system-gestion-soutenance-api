@@ -38,13 +38,13 @@ public class DefenseSessionController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a defense session")
-    public DefenseSession update(@PathVariable String id, @Valid @RequestBody CreateDefenseSessionRequest request) {
+    public DefenseSession update(@PathVariable Long id, @Valid @RequestBody CreateDefenseSessionRequest request) {
         return defenseSessionService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete a defense session")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         defenseSessionService.delete(id);
         return ResponseEntity.noContent().build();
     }
