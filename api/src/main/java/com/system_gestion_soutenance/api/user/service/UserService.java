@@ -11,12 +11,14 @@ import com.system_gestion_soutenance.api.admin.department.repository.DepartmentR
 import com.system_gestion_soutenance.api.common.dto.PaginatedResponse;
 import com.system_gestion_soutenance.api.coordinator.jury.repository.JuryMemberRepository;
 import com.system_gestion_soutenance.api.coordinator.project.repository.ProjectRepository;
+import com.system_gestion_soutenance.api.notification.service.EmailService;
 import com.system_gestion_soutenance.api.user.dto.BulkCreateRequest;
 import com.system_gestion_soutenance.api.user.dto.CreateUserRequest;
 import com.system_gestion_soutenance.api.user.dto.UpdateUserRequest;
 import com.system_gestion_soutenance.api.user.dto.UserDto;
 import com.system_gestion_soutenance.api.user.entity.*;
 import com.system_gestion_soutenance.api.user.repository.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -40,6 +42,8 @@ public class UserService {
     private final DepartmentRepository departmentRepository;
     private final JuryMemberRepository juryMemberRepository;
     private final ProjectRepository projectRepository;
+    private final EmailService emailService;
+    private final String baseUrl;
 
     public UserService(UserRepository userRepository,
                        StudentRepository studentRepository,
@@ -50,7 +54,9 @@ public class UserService {
                        GradeRepository gradeRepository,
                        DepartmentRepository departmentRepository,
                        JuryMemberRepository juryMemberRepository,
-                       ProjectRepository projectRepository) {
+                       ProjectRepository projectRepository,
+                       EmailService emailService,
+                       @Value("${app.ui.base-url}") String baseUrl) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
@@ -61,6 +67,8 @@ public class UserService {
         this.departmentRepository = departmentRepository;
         this.juryMemberRepository = juryMemberRepository;
         this.projectRepository = projectRepository;
+        this.emailService = emailService;
+        this.baseUrl = baseUrl;
     }
 
     public PaginatedResponse<UserDto> listUsers(String role, int page, int limit) {
@@ -109,7 +117,7 @@ public class UserService {
         user.setVerificationToken(UUID.randomUUID().toString());
 
         userRepository.save(user);
-        logVerificationLink(user);
+        sendVerificationEmail(user);
 
         return UserDto.from(user);
     }
@@ -138,6 +146,7 @@ public class UserService {
             user.setVerificationToken(UUID.randomUUID().toString());
 
             userRepository.save(user);
+            sendVerificationEmail(user);
             results.add(UserDto.from(user));
         }
 
@@ -363,7 +372,8 @@ public class UserService {
         }
     }
 
-    private void logVerificationLink(User user) {
-        System.out.println("[VERIFICATION] /verify-account?token=" + user.getVerificationToken());
+    private void sendVerificationEmail(User user) {
+        String verificationLink = baseUrl + "/verify-account?token=" + user.getVerificationToken();
+        emailService.sendVerificationEmail(user.getEmail(), user.getFirstName(), verificationLink);
     }
 }

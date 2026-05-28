@@ -56,6 +56,7 @@ public class AuthService {
         return new LoginResponse(UserDto.from(user), token, expiresAt);
     }
 
+    @Transactional
     public void verifyAccount(VerifyRequest request) {
         User user = userRepository.findByVerificationToken(request.token())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
