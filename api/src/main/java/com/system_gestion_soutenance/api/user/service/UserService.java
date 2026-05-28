@@ -263,14 +263,11 @@ public class UserService {
     }
 
     private Teacher createTeacher(CreateUserRequest request) {
-        if (request.gradeId() == null || request.departmentId() == null) {
+        if (request.departmentId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Les champs gradeId et departmentId sont requis pour un enseignant");
+                    "Le champ departmentId est requis pour un enseignant");
         }
 
-        Grade grade = gradeRepository.findById(request.gradeId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Grade introuvable"));
         Department dept = departmentRepository.findById(request.departmentId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Département introuvable"));
@@ -280,7 +277,12 @@ public class UserService {
         teacher.setRole(Role.TEACHER);
         teacher.setLastName(request.lastName());
         teacher.setFirstName(request.firstName());
-        teacher.setGrade(grade);
+        if (request.gradeId() != null) {
+            Grade grade = gradeRepository.findById(request.gradeId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Grade introuvable"));
+            teacher.setGrade(grade);
+        }
         teacher.setDepartment(dept);
         return teacher;
     }
@@ -328,14 +330,11 @@ public class UserService {
     }
 
     private Teacher createBulkTeacher(BulkCreateRequest.BulkUserEntry entry) {
-        if (entry.gradeName() == null || entry.departmentName() == null) {
+        if (entry.departmentName() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    "Les champs gradeName et departmentName sont requis pour un enseignant");
+                    "Le champ departmentName est requis pour un enseignant");
         }
 
-        Grade grade = gradeRepository.findByName(entry.gradeName())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                        "Grade introuvable: " + entry.gradeName()));
         Department dept = departmentRepository.findByName(entry.departmentName())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
                         "Département introuvable: " + entry.departmentName()));
@@ -345,7 +344,12 @@ public class UserService {
         teacher.setRole(Role.TEACHER);
         teacher.setLastName(entry.lastName());
         teacher.setFirstName(entry.firstName());
-        teacher.setGrade(grade);
+        if (entry.gradeName() != null) {
+            Grade grade = gradeRepository.findByName(entry.gradeName())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Grade introuvable: " + entry.gradeName()));
+            teacher.setGrade(grade);
+        }
         teacher.setDepartment(dept);
         return teacher;
     }
