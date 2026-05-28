@@ -1,4 +1,4 @@
-package com.system_gestion_soutenance.api.admin.defensesession.dto;
+package com.system_gestion_soutenance.api.coordinator.defensesession.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
