@@ -2,7 +2,6 @@ package com.system_gestion_soutenance.api.admin.defensesession.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.system_gestion_soutenance.api.admin.config.juryrole.entity.JuryRoleTemplate;
-import com.system_gestion_soutenance.api.admin.session.entity.Session;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,11 +19,6 @@ public class DefenseSession {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "global_session_id", nullable = false)
-    @JsonIgnore
-    private Session globalSession;
 
     @Column(nullable = false)
     private String name;
@@ -66,10 +60,6 @@ public class DefenseSession {
 
     @Column(name = "end_date", nullable = false)
     private LocalDate endDate;
-
-    public Long getGlobalSessionId() {
-        return globalSession != null ? globalSession.getId() : null;
-    }
 
     public Long getJuryRoleTemplateId() {
         return juryRoleTemplate != null ? juryRoleTemplate.getId() : null;

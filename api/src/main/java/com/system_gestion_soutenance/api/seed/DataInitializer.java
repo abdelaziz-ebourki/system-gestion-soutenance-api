@@ -29,9 +29,7 @@ import com.system_gestion_soutenance.api.admin.faculty.entity.Faculty;
 import com.system_gestion_soutenance.api.admin.faculty.repository.FacultyRepository;
 import com.system_gestion_soutenance.api.admin.room.entity.Room;
 import com.system_gestion_soutenance.api.admin.room.repository.RoomRepository;
-import com.system_gestion_soutenance.api.admin.session.entity.Session;
-import com.system_gestion_soutenance.api.admin.session.entity.SessionStatus;
-import com.system_gestion_soutenance.api.admin.session.repository.SessionRepository;
+
 import com.system_gestion_soutenance.api.coordinator.group.entity.Group;
 import com.system_gestion_soutenance.api.coordinator.group.repository.GroupRepository;
 import com.system_gestion_soutenance.api.coordinator.jury.entity.Jury;
@@ -84,7 +82,6 @@ public class DataInitializer implements CommandLineRunner {
     private final TeacherRepository teacherRepo;
     private final StudentRepository studentRepo;
     private final RoomRepository roomRepo;
-    private final SessionRepository sessionRepo;
     private final JuryRoleTemplateRepository juryRoleTemplateRepo;
     private final DefenseSessionRepository defenseSessionRepo;
     private final ProjectRepository projectRepo;
@@ -112,7 +109,6 @@ public class DataInitializer implements CommandLineRunner {
             TeacherRepository teacherRepo,
             StudentRepository studentRepo,
             RoomRepository roomRepo,
-            SessionRepository sessionRepo,
             JuryRoleTemplateRepository juryRoleTemplateRepo,
             DefenseSessionRepository defenseSessionRepo,
             ProjectRepository projectRepo,
@@ -137,7 +133,6 @@ public class DataInitializer implements CommandLineRunner {
         this.teacherRepo = teacherRepo;
         this.studentRepo = studentRepo;
         this.roomRepo = roomRepo;
-        this.sessionRepo = sessionRepo;
         this.juryRoleTemplateRepo = juryRoleTemplateRepo;
         this.defenseSessionRepo = defenseSessionRepo;
         this.projectRepo = projectRepo;
@@ -373,18 +368,6 @@ public class DataInitializer implements CommandLineRunner {
                 new Room(null, "Salle Réunion", 20, dBio)
         ));
 
-        // Phase 10: Global Sessions
-        Session s1 = sessionRepo.save(new Session(null, "Session Printemps 2025", "NORMALE", SessionStatus.ARCHIVED,
-                LocalDate.of(2025, 2, 1), LocalDate.of(2025, 7, 15)));
-        Session s2 = sessionRepo.save(new Session(null, "Session Automne 2025", "NORMALE", SessionStatus.ARCHIVED,
-                LocalDate.of(2025, 9, 1), LocalDate.of(2026, 1, 31)));
-        Session s3 = sessionRepo.save(new Session(null, "Session Printemps 2026", "NORMALE", SessionStatus.ACTIVE,
-                LocalDate.of(2026, 2, 1), LocalDate.of(2026, 7, 15)));
-        Session s4 = sessionRepo.save(new Session(null, "Session Rattrapage 2026", "RATTRAPAGE", SessionStatus.DRAFT,
-                LocalDate.of(2026, 8, 1), LocalDate.of(2026, 9, 15)));
-        Session s5 = sessionRepo.save(new Session(null, "Session Automne 2026", "NORMALE", SessionStatus.DRAFT,
-                LocalDate.of(2026, 9, 1), LocalDate.of(2027, 1, 31)));
-
         // Phase 11: Jury Role Templates
         JuryRoleTemplate jrtPfe = juryRoleTemplateRepo.save(new JuryRoleTemplate(null, "Template PFE", DefenseType.PFE,
                 List.of(new TemplateRole("Président", 1, 30), new TemplateRole("Rapporteur", 1, 35),
@@ -403,19 +386,19 @@ public class DataInitializer implements CommandLineRunner {
         coeffs.put("Examinateur", 35);
 
         DefenseSession ds1 = defenseSessionRepo.save(new DefenseSession(
-                null, s1, "Soutenance PFE Printemps 2025", DefenseType.PFE, DefenseSessionStatus.COMPLETED,
+                null, "Soutenance PFE Printemps 2025", DefenseType.PFE, DefenseSessionStatus.COMPLETED,
                 3, 30, 10, LocalDate.of(2025, 5, 15), coeffs, jrtPfe,
                 LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 30)));
         DefenseSession ds2 = defenseSessionRepo.save(new DefenseSession(
-                null, s2, "Soutenance PFE Automne 2025", DefenseType.PFE, DefenseSessionStatus.COMPLETED,
+                null, "Soutenance PFE Automne 2025", DefenseType.PFE, DefenseSessionStatus.COMPLETED,
                 3, 30, 10, LocalDate.of(2025, 12, 15), coeffs, jrtPfe,
                 LocalDate.of(2026, 1, 5), LocalDate.of(2026, 1, 25)));
         DefenseSession ds3 = defenseSessionRepo.save(new DefenseSession(
-                null, s3, "Soutenance PFE Printemps 2026", DefenseType.PFE, DefenseSessionStatus.ACTIVE,
+                null, "Soutenance PFE Printemps 2026", DefenseType.PFE, DefenseSessionStatus.ACTIVE,
                 3, 30, 10, LocalDate.of(2026, 6, 1), coeffs, jrtPfe,
                 LocalDate.of(2026, 6, 15), LocalDate.of(2026, 7, 10)));
         DefenseSession ds4 = defenseSessionRepo.save(new DefenseSession(
-                null, s3, "Soutenance Mémoire Printemps 2026", DefenseType.MEMOIRE, DefenseSessionStatus.SCHEDULED,
+                null, "Soutenance Mémoire Printemps 2026", DefenseType.MEMOIRE, DefenseSessionStatus.SCHEDULED,
                 4, 45, 15, LocalDate.of(2026, 6, 1), coeffs, jrtMemoire,
                 LocalDate.of(2026, 6, 20), LocalDate.of(2026, 7, 15)));
         Map<String, Integer> coeffs2 = new LinkedHashMap<>();
@@ -423,11 +406,11 @@ public class DataInitializer implements CommandLineRunner {
         coeffs2.put("Rapporteur", 30);
         coeffs2.put("Examinateur", 45);
         DefenseSession ds5 = defenseSessionRepo.save(new DefenseSession(
-                null, s3, "Soutenance Thèse Printemps 2026", DefenseType.THESE, DefenseSessionStatus.SCHEDULED,
+                null, "Soutenance Thèse Printemps 2026", DefenseType.THESE, DefenseSessionStatus.SCHEDULED,
                 1, 60, 20, LocalDate.of(2026, 5, 15), coeffs2, jrtThese,
                 LocalDate.of(2026, 6, 10), LocalDate.of(2026, 7, 5)));
         DefenseSession ds6 = defenseSessionRepo.save(new DefenseSession(
-                null, s4, "Soutenance Rattrapage 2026", DefenseType.PFE, DefenseSessionStatus.DRAFT,
+                null, "Soutenance Rattrapage 2026", DefenseType.PFE, DefenseSessionStatus.DRAFT,
                 3, 30, 10, LocalDate.of(2026, 8, 15), coeffs, jrtPfe,
                 LocalDate.of(2026, 9, 1), LocalDate.of(2026, 9, 15)));
 
@@ -916,7 +899,7 @@ public class DataInitializer implements CommandLineRunner {
                 new AuditSeed("CREATE", "Project", "", "admin@univh2c.ma", 10),
                 new AuditSeed("UPDATE", "Student", "", "admin@univh2c.ma", 11),
                 new AuditSeed("DELETE", "DefenseSession", "", "admin@univh2c.ma", 12),
-                new AuditSeed("APPROVE", "GlobalSession", "", "admin@univh2c.ma", 13),
+                new AuditSeed("APPROVE", "DefenseSession", "", "admin@univh2c.ma", 13),
                 new AuditSeed("REJECT", "Jury", "", "admin@univh2c.ma", 14),
                 new AuditSeed("ARCHIVE", "User", "", "admin@univh2c.ma", 15),
                 new AuditSeed("ACTIVATE", "Room", "", "admin@univh2c.ma", 16),
@@ -924,7 +907,7 @@ public class DataInitializer implements CommandLineRunner {
                 new AuditSeed("CREATE", "Project", "", "admin@univh2c.ma", 18),
                 new AuditSeed("UPDATE", "Student", "", "admin@univh2c.ma", 19),
                 new AuditSeed("DELETE", "DefenseSession", "", "admin@univh2c.ma", 20),
-                new AuditSeed("APPROVE", "GlobalSession", "", "admin@univh2c.ma", 21),
+                new AuditSeed("APPROVE", "DefenseSession", "", "admin@univh2c.ma", 21),
                 new AuditSeed("REJECT", "Jury", "", "admin@univh2c.ma", 22),
                 new AuditSeed("ARCHIVE", "User", "", "admin@univh2c.ma", 23),
                 new AuditSeed("ACTIVATE", "Room", "", "admin@univh2c.ma", 24),
@@ -932,7 +915,7 @@ public class DataInitializer implements CommandLineRunner {
                 new AuditSeed("CREATE", "Project", "", "admin@univh2c.ma", 26),
                 new AuditSeed("UPDATE", "Student", "", "admin@univh2c.ma", 27),
                 new AuditSeed("DELETE", "DefenseSession", "", "admin@univh2c.ma", 28),
-                new AuditSeed("APPROVE", "GlobalSession", "", "admin@univh2c.ma", 29),
+                new AuditSeed("APPROVE", "DefenseSession", "", "admin@univh2c.ma", 29),
         };
         for (int i = 0; i < auditSeeds.length; i++) {
             AuditSeed as2 = auditSeeds[i];

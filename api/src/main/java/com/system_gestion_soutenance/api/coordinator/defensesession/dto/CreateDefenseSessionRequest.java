@@ -1,12 +1,10 @@
 package com.system_gestion_soutenance.api.coordinator.defensesession.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 import java.util.Map;
 
 public record CreateDefenseSessionRequest(
-        @NotNull Long globalSessionId,
         @NotBlank String name,
         @NotBlank String defenseType,
         String status,

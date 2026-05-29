@@ -7,8 +7,6 @@ import com.system_gestion_soutenance.api.admin.defensesession.entity.DefenseSess
 import com.system_gestion_soutenance.api.admin.defensesession.entity.DefenseSessionStatus;
 import com.system_gestion_soutenance.api.admin.defensesession.entity.DefenseType;
 import com.system_gestion_soutenance.api.admin.defensesession.repository.DefenseSessionRepository;
-import com.system_gestion_soutenance.api.admin.session.entity.Session;
-import com.system_gestion_soutenance.api.admin.session.repository.SessionRepository;
 import com.system_gestion_soutenance.api.coordinator.defensesession.dto.CreateDefenseSessionRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -35,14 +33,11 @@ public class CoordinatorDefenseSessionService {
     );
 
     private final DefenseSessionRepository defenseSessionRepository;
-    private final SessionRepository sessionRepository;
     private final JuryRoleTemplateRepository juryRoleTemplateRepository;
 
     public CoordinatorDefenseSessionService(DefenseSessionRepository defenseSessionRepository,
-                                             SessionRepository sessionRepository,
                                              JuryRoleTemplateRepository juryRoleTemplateRepository) {
         this.defenseSessionRepository = defenseSessionRepository;
-        this.sessionRepository = sessionRepository;
         this.juryRoleTemplateRepository = juryRoleTemplateRepository;
     }
 
@@ -62,10 +57,6 @@ public class CoordinatorDefenseSessionService {
         ds.setSubmissionDeadline(request.submissionDeadline() != null ? LocalDate.parse(request.submissionDeadline()) : null);
         ds.setStartDate(LocalDate.parse(request.startDate()));
         ds.setEndDate(LocalDate.parse(request.endDate()));
-
-        Session globalSession = sessionRepository.findById(request.globalSessionId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Session globale introuvable"));
-        ds.setGlobalSession(globalSession);
 
         if (request.juryRoleTemplateId() != null) {
             JuryRoleTemplate template = juryRoleTemplateRepository.findById(request.juryRoleTemplateId())
@@ -101,10 +92,6 @@ public class CoordinatorDefenseSessionService {
         ds.setSubmissionDeadline(request.submissionDeadline() != null ? LocalDate.parse(request.submissionDeadline()) : null);
         ds.setStartDate(LocalDate.parse(request.startDate()));
         ds.setEndDate(LocalDate.parse(request.endDate()));
-
-        Session globalSession = sessionRepository.findById(request.globalSessionId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Session globale introuvable"));
-        ds.setGlobalSession(globalSession);
 
         if (request.juryRoleTemplateId() != null) {
             JuryRoleTemplate template = juryRoleTemplateRepository.findById(request.juryRoleTemplateId())
