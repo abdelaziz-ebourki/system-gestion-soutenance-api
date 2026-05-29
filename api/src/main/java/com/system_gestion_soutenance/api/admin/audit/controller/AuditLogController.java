@@ -2,7 +2,8 @@ package com.system_gestion_soutenance.api.admin.audit.controller;
 
 import com.system_gestion_soutenance.api.admin.audit.dto.AuditLogRequest;
 import com.system_gestion_soutenance.api.admin.audit.entity.AuditLog;
-import com.system_gestion_soutenance.api.admin.audit.repository.AuditLogRepository;
+import com.system_gestion_soutenance.api.admin.audit.service.AuditLogService;
+import com.system_gestion_soutenance.api.common.dto.PaginatedResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -11,23 +12,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/audit-logs")
 @Tag(name = "Admin - Audit Logs", description = "Journal d'audit")
 public class AuditLogController {
 
-    private final AuditLogRepository repository;
+    private final AuditLogService service;
 
-    public AuditLogController(AuditLogRepository repository) {
-        this.repository = repository;
+    public AuditLogController(AuditLogService service) {
+        this.service = service;
     }
 
     @GetMapping
-    @Operation(summary = "List all audit logs")
-    public List<AuditLog> findAll() {
-        return repository.findAllByOrderByTimestampDesc();
+    @Operation(summary = "List audit logs with pagination")
+    public PaginatedResponse<AuditLog> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int limit) {
+        return service.getAuditLogs(page, limit);
     }
 
     @PostMapping
@@ -40,6 +42,6 @@ public class AuditLogController {
         log.setAdminEmail(request.adminEmail());
         log.setDetails(request.details());
         log.setTimestamp(LocalDateTime.now());
-        return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(log));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(log));
     }
 }
