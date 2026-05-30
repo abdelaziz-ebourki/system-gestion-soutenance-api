@@ -1,1 +1,13 @@
 archive/
+
+# Maven build output
+target/
+
+# Java / IDE
+*.class
+*.iml
+.idea/
+
+# Node (for husky)
+node_modules/
+package-lock.json

@@ -1,0 +1,3 @@
+cd api
+./mvnw --no-transfer-progress compile -q
+./mvnw --no-transfer-progress package -DskipTests -q
