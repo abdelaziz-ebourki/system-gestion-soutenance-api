@@ -1,12 +1,12 @@
 package com.system_gestion_soutenance.api.admin.config.email.controller;
 
+import com.system_gestion_soutenance.api.admin.config.email.dto.UpdateEmailConfigRequest;
 import com.system_gestion_soutenance.api.admin.config.email.entity.EmailConfig;
 import com.system_gestion_soutenance.api.admin.config.email.service.EmailConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/config/email")
@@ -27,7 +27,7 @@ public class EmailConfigController {
 
     @PutMapping
     @Operation(summary = "Update email configuration")
-    public EmailConfig update(@RequestBody Map<String, Object> updates) {
+    public EmailConfig update(@Valid @RequestBody UpdateEmailConfigRequest updates) {
         return service.update(updates);
     }
 }

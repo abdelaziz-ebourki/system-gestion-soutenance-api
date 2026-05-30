@@ -1,12 +1,12 @@
 package com.system_gestion_soutenance.api.admin.config.settings.defense.controller;
 
+import com.system_gestion_soutenance.api.admin.config.settings.defense.dto.UpdateDefenseSettingsRequest;
 import com.system_gestion_soutenance.api.admin.config.settings.defense.entity.DefenseSettings;
 import com.system_gestion_soutenance.api.admin.config.settings.defense.service.DefenseSettingsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/config/settings")
@@ -27,7 +27,7 @@ public class DefenseSettingsController {
 
     @PostMapping
     @Operation(summary = "Update defense settings")
-    public DefenseSettings update(@RequestBody Map<String, Object> updates) {
+    public DefenseSettings update(@Valid @RequestBody UpdateDefenseSettingsRequest updates) {
         return service.update(updates);
     }
 }

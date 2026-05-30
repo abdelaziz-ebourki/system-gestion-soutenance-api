@@ -1,9 +1,11 @@
 FROM maven:3.9-eclipse-temurin-17-alpine AS build
 WORKDIR /build
 COPY api/pom.xml .
-RUN mvn dependency:go-offline -B
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn dependency:go-offline -B
 COPY api/src ./src
-RUN mvn package -DskipTests -B
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn package -DskipTests -B
 
 FROM eclipse-temurin:17-jre-alpine
 RUN addgroup -S spring && adduser -S spring -G spring

@@ -3,14 +3,17 @@ package com.system_gestion_soutenance.api.admin.config.level.service;
 import com.system_gestion_soutenance.api.admin.config.level.dto.CreateLevelRequest;
 import com.system_gestion_soutenance.api.admin.config.level.entity.Level;
 import com.system_gestion_soutenance.api.admin.config.level.repository.LevelRepository;
+import com.system_gestion_soutenance.api.common.audit.Audited;
 import com.system_gestion_soutenance.api.user.repository.StudentRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class LevelConfigService {
 
     private final LevelRepository levelRepository;
@@ -25,6 +28,8 @@ public class LevelConfigService {
         return levelRepository.findAll();
     }
 
+    @Audited(action = "CREATE", entity = "Level")
+    @Transactional
     public Level create(CreateLevelRequest request) {
         if (levelRepository.findByName(request.name()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -36,6 +41,8 @@ public class LevelConfigService {
         return levelRepository.save(level);
     }
 
+    @Audited(action = "UPDATE", entity = "Level")
+    @Transactional
     public Level update(Long id, CreateLevelRequest request) {
         Level level = levelRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -45,6 +52,8 @@ public class LevelConfigService {
         return levelRepository.save(level);
     }
 
+    @Audited(action = "DELETE", entity = "Level")
+    @Transactional
     public void delete(Long id) {
         Level level = levelRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,

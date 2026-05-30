@@ -1,12 +1,12 @@
 package com.system_gestion_soutenance.api.admin.config.document.controller;
 
+import com.system_gestion_soutenance.api.admin.config.document.dto.UpdateDocumentConfigRequest;
 import com.system_gestion_soutenance.api.admin.config.document.entity.DocumentConfig;
 import com.system_gestion_soutenance.api.admin.config.document.service.DocumentConfigService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/config/documents")
@@ -27,7 +27,7 @@ public class DocumentConfigController {
 
     @PutMapping
     @Operation(summary = "Update document configuration")
-    public DocumentConfig update(@RequestBody Map<String, Object> updates) {
+    public DocumentConfig update(@Valid @RequestBody UpdateDocumentConfigRequest updates) {
         return service.update(updates);
     }
 }

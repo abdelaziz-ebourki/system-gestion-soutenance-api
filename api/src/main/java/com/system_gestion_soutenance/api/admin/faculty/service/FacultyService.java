@@ -4,13 +4,16 @@ import com.system_gestion_soutenance.api.admin.department.repository.DepartmentR
 import com.system_gestion_soutenance.api.admin.faculty.dto.CreateFacultyRequest;
 import com.system_gestion_soutenance.api.admin.faculty.entity.Faculty;
 import com.system_gestion_soutenance.api.admin.faculty.repository.FacultyRepository;
+import com.system_gestion_soutenance.api.common.audit.Audited;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class FacultyService {
 
     private final FacultyRepository facultyRepository;
@@ -30,6 +33,8 @@ public class FacultyService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Faculté non trouvée"));
     }
 
+    @Audited(action = "CREATE", entity = "Faculty")
+    @Transactional
     public Faculty create(CreateFacultyRequest request) {
         Faculty faculty = new Faculty();
         faculty.setName(request.name());
@@ -39,6 +44,8 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
+    @Audited(action = "UPDATE", entity = "Faculty")
+    @Transactional
     public Faculty update(Long id, CreateFacultyRequest request) {
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Faculté non trouvée"));
@@ -50,6 +57,8 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
+    @Audited(action = "DELETE", entity = "Faculty")
+    @Transactional
     public void delete(Long id) {
         Faculty faculty = facultyRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Faculté non trouvée"));

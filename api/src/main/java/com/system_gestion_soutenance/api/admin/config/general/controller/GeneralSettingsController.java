@@ -1,12 +1,12 @@
 package com.system_gestion_soutenance.api.admin.config.general.controller;
 
+import com.system_gestion_soutenance.api.admin.config.general.dto.UpdateGeneralSettingsRequest;
 import com.system_gestion_soutenance.api.admin.config.general.entity.GeneralSettings;
 import com.system_gestion_soutenance.api.admin.config.general.service.GeneralSettingsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/config/general")
@@ -27,7 +27,7 @@ public class GeneralSettingsController {
 
     @PutMapping
     @Operation(summary = "Update general settings")
-    public GeneralSettings update(@RequestBody Map<String, Object> updates) {
+    public GeneralSettings update(@Valid @RequestBody UpdateGeneralSettingsRequest updates) {
         return service.update(updates);
     }
 }

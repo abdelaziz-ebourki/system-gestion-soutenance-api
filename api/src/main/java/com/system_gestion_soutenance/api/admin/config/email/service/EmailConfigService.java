@@ -1,12 +1,11 @@
 package com.system_gestion_soutenance.api.admin.config.email.service;
 
+import com.system_gestion_soutenance.api.admin.config.email.dto.UpdateEmailConfigRequest;
 import com.system_gestion_soutenance.api.admin.config.email.entity.EmailConfig;
 import com.system_gestion_soutenance.api.admin.config.email.repository.EmailConfigRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Map;
 
 @Service
 public class EmailConfigService {
@@ -23,31 +22,19 @@ public class EmailConfigService {
                         "Configuration email non trouvée"));
     }
 
-    public EmailConfig update(Map<String, Object> updates) {
+    public EmailConfig update(UpdateEmailConfigRequest updates) {
         EmailConfig config = repository.findById(1L)
                 .orElse(new EmailConfig());
 
-        if (updates.containsKey("host"))
-            config.setHost((String) updates.get("host"));
-        if (updates.containsKey("port"))
-            config.setPort(toInt(updates.get("port")));
-        if (updates.containsKey("username"))
-            config.setUsername((String) updates.get("username"));
-        if (updates.containsKey("password"))
-            config.setPassword((String) updates.get("password"));
-        if (updates.containsKey("senderName"))
-            config.setSenderName((String) updates.get("senderName"));
-        if (updates.containsKey("senderEmail"))
-            config.setSenderEmail((String) updates.get("senderEmail"));
-        if (updates.containsKey("encryption"))
-            config.setEncryption((String) updates.get("encryption"));
+        config.setHost(updates.host());
+        config.setPort(updates.port());
+        config.setUsername(updates.username());
+        if (updates.password() != null) config.setPassword(updates.password());
+        config.setSenderName(updates.senderName());
+        config.setSenderEmail(updates.senderEmail());
+        config.setEncryption(updates.encryption());
 
         config.setId(1L);
         return repository.save(config);
-    }
-
-    private int toInt(Object value) {
-        if (value instanceof Number) return ((Number) value).intValue();
-        return Integer.parseInt(value.toString());
     }
 }

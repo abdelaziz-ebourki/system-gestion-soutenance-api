@@ -3,14 +3,17 @@ package com.system_gestion_soutenance.api.admin.config.major.service;
 import com.system_gestion_soutenance.api.admin.config.major.dto.CreateMajorRequest;
 import com.system_gestion_soutenance.api.admin.config.major.entity.Major;
 import com.system_gestion_soutenance.api.admin.config.major.repository.MajorRepository;
+import com.system_gestion_soutenance.api.common.audit.Audited;
 import com.system_gestion_soutenance.api.user.repository.StudentRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class MajorConfigService {
 
     private final MajorRepository majorRepository;
@@ -25,6 +28,8 @@ public class MajorConfigService {
         return majorRepository.findAll();
     }
 
+    @Audited(action = "CREATE", entity = "Major")
+    @Transactional
     public Major create(CreateMajorRequest request) {
         if (majorRepository.findByName(request.name()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -36,6 +41,8 @@ public class MajorConfigService {
         return majorRepository.save(major);
     }
 
+    @Audited(action = "UPDATE", entity = "Major")
+    @Transactional
     public Major update(Long id, CreateMajorRequest request) {
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -45,6 +52,8 @@ public class MajorConfigService {
         return majorRepository.save(major);
     }
 
+    @Audited(action = "DELETE", entity = "Major")
+    @Transactional
     public void delete(Long id) {
         Major major = majorRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,

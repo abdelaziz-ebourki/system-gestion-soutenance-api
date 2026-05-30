@@ -3,14 +3,17 @@ package com.system_gestion_soutenance.api.admin.config.grade.service;
 import com.system_gestion_soutenance.api.admin.config.grade.dto.CreateGradeRequest;
 import com.system_gestion_soutenance.api.admin.config.grade.entity.Grade;
 import com.system_gestion_soutenance.api.admin.config.grade.repository.GradeRepository;
+import com.system_gestion_soutenance.api.common.audit.Audited;
 import com.system_gestion_soutenance.api.user.repository.TeacherRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class GradeConfigService {
 
     private final GradeRepository gradeRepository;
@@ -25,6 +28,8 @@ public class GradeConfigService {
         return gradeRepository.findAll();
     }
 
+    @Audited(action = "CREATE", entity = "Grade")
+    @Transactional
     public Grade create(CreateGradeRequest request) {
         if (gradeRepository.findByName(request.name()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -36,6 +41,8 @@ public class GradeConfigService {
         return gradeRepository.save(grade);
     }
 
+    @Audited(action = "UPDATE", entity = "Grade")
+    @Transactional
     public Grade update(Long id, CreateGradeRequest request) {
         Grade grade = gradeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -45,6 +52,8 @@ public class GradeConfigService {
         return gradeRepository.save(grade);
     }
 
+    @Audited(action = "DELETE", entity = "Grade")
+    @Transactional
     public void delete(Long id) {
         Grade grade = gradeRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,

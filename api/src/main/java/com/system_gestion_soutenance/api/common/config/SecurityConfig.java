@@ -53,7 +53,7 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
-                .requestMatchers("/api/admin/rooms").hasAnyRole("ADMIN", "COORDINATOR")
+                .requestMatchers("/api/admin/rooms/**").hasAnyRole("ADMIN", "COORDINATOR")
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/coordinator/**").hasAnyRole("ADMIN", "COORDINATOR")
                 .requestMatchers("/api/teacher/**").hasRole("TEACHER")

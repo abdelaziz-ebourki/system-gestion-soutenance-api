@@ -27,12 +27,13 @@ public class UserAdminController {
     }
 
     @GetMapping("/users")
-    @Operation(summary = "List users with pagination and optional role filter")
+    @Operation(summary = "List users with pagination and optional role/search filters")
     public PaginatedResponse<UserDto> listUsers(
             @RequestParam(required = false) String role,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit) {
-        return userService.listUsers(role, page, limit);
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String search) {
+        return userService.listUsers(role, page, limit, search);
     }
 
     @GetMapping("/users/teachers-list")
@@ -51,24 +52,27 @@ public class UserAdminController {
     @Operation(summary = "List students with pagination")
     public PaginatedResponse<UserDto> listStudents(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit) {
-        return userService.listUsers("student", page, limit);
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String search) {
+        return userService.listUsers("student", page, limit, search);
     }
 
     @GetMapping("/teachers")
     @Operation(summary = "List teachers with pagination")
     public PaginatedResponse<UserDto> listTeachers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit) {
-        return userService.listUsers("teacher", page, limit);
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String search) {
+        return userService.listUsers("teacher", page, limit, search);
     }
 
     @GetMapping("/coordinators")
     @Operation(summary = "List coordinators with pagination")
     public PaginatedResponse<UserDto> listCoordinators(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit) {
-        return userService.listUsers("coordinator", page, limit);
+            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(required = false) String search) {
+        return userService.listUsers("coordinator", page, limit, search);
     }
 
     @PostMapping("/users")

@@ -6,15 +6,18 @@ import com.system_gestion_soutenance.api.admin.department.repository.DepartmentR
 import com.system_gestion_soutenance.api.admin.faculty.entity.Faculty;
 import com.system_gestion_soutenance.api.admin.faculty.repository.FacultyRepository;
 import com.system_gestion_soutenance.api.admin.room.repository.RoomRepository;
+import com.system_gestion_soutenance.api.common.audit.Audited;
 import com.system_gestion_soutenance.api.user.entity.Teacher;
 import com.system_gestion_soutenance.api.user.repository.TeacherRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
@@ -42,6 +45,8 @@ public class DepartmentService {
                         "Département non trouvé"));
     }
 
+    @Audited(action = "CREATE", entity = "Department")
+    @Transactional
     public Department create(CreateDepartmentRequest request) {
         if (departmentRepository.findByName(request.name()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -67,6 +72,8 @@ public class DepartmentService {
         return departmentRepository.save(department);
     }
 
+    @Audited(action = "UPDATE", entity = "Department")
+    @Transactional
     public Department update(Long id, CreateDepartmentRequest request) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -92,6 +99,8 @@ public class DepartmentService {
         return departmentRepository.save(department);
     }
 
+    @Audited(action = "DELETE", entity = "Department")
+    @Transactional
     public void delete(Long id) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,

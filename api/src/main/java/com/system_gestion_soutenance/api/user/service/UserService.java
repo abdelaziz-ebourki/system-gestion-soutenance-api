@@ -71,12 +71,15 @@ public class UserService {
         this.baseUrl = baseUrl;
     }
 
-    public PaginatedResponse<UserDto> listUsers(String role, int page, int limit) {
+    public PaginatedResponse<UserDto> listUsers(String role, int page, int limit, String search) {
         PageRequest pageable = PageRequest.of(page, limit);
         Page<User> userPage;
 
-        if (role != null && !role.isBlank()) {
-            Role roleEnum = parseRole(role);
+        Role roleEnum = (role != null && !role.isBlank()) ? parseRole(role) : null;
+
+        if (search != null && !search.isBlank()) {
+            userPage = userRepository.findByRoleAndSearch(roleEnum, search, pageable);
+        } else if (roleEnum != null) {
             userPage = userRepository.findByRole(roleEnum, pageable);
         } else {
             userPage = userRepository.findAll(pageable);

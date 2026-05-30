@@ -2,6 +2,7 @@ package com.system_gestion_soutenance.api.admin.room.controller;
 
 import com.system_gestion_soutenance.api.admin.room.dto.BulkRoomRequest;
 import com.system_gestion_soutenance.api.admin.room.dto.CreateRoomRequest;
+import com.system_gestion_soutenance.api.admin.room.dto.RoomResponse;
 import com.system_gestion_soutenance.api.admin.room.entity.Room;
 import com.system_gestion_soutenance.api.admin.room.service.RoomService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,28 +27,32 @@ public class RoomController {
 
     @GetMapping
     @Operation(summary = "List all rooms")
-    public List<Room> findAll() {
-        return roomService.findAll();
+    public List<RoomResponse> findAll() {
+        return roomService.findAll().stream()
+                .map(RoomResponse::from)
+                .toList();
     }
 
     @PostMapping
     @Operation(summary = "Create a new room")
-    public ResponseEntity<Room> create(@Valid @RequestBody CreateRoomRequest request) {
+    public ResponseEntity<RoomResponse> create(@Valid @RequestBody CreateRoomRequest request) {
         Room room = roomService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(room);
+        return ResponseEntity.status(HttpStatus.CREATED).body(RoomResponse.from(room));
     }
 
     @PostMapping("/bulk")
     @Operation(summary = "Bulk create rooms")
-    public ResponseEntity<List<Room>> bulkCreate(@Valid @RequestBody BulkRoomRequest request) {
+    public ResponseEntity<List<RoomResponse>> bulkCreate(@Valid @RequestBody BulkRoomRequest request) {
         List<Room> rooms = roomService.bulkCreate(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(rooms);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                rooms.stream().map(RoomResponse::from).toList()
+        );
     }
 
     @PutMapping("/{id}")
     @Operation(summary = "Update a room")
-    public Room update(@PathVariable Long id, @Valid @RequestBody CreateRoomRequest request) {
-        return roomService.update(id, request);
+    public RoomResponse update(@PathVariable Long id, @Valid @RequestBody CreateRoomRequest request) {
+        return RoomResponse.from(roomService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
