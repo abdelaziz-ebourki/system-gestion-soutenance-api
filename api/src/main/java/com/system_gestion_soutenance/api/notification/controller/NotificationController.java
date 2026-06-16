@@ -17,7 +17,8 @@ import jakarta.validation.constraints.Min;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 @SuppressWarnings("PMD")
 
@@ -42,11 +43,12 @@ public class NotificationController {
 	@ApiResponses({
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Successfully retrieved notifications"),
 			@io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid query parameters")})
-	public ApiResponse<PaginatedResponse<AppNotificationDto>> findAll(@AuthenticationPrincipal User user,
+	public ApiResponse<PaginatedResponse<AppNotificationDto>> findAll(
 			@Parameter(description = "Page number (zero-based)") @RequestParam(defaultValue = "0") @Min(0) int page,
 			@Parameter(description = "Number of items per page") @RequestParam(defaultValue = "10") @Min(1) @Max(500) int limit) {
 		PaginatedResponse<AppNotification> result;
-		if (user != null) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof User user) {
 			result = notificationService.findAllByUser(user.getId(), page, limit);
 		} else {
 			result = notificationService.findAll(page, limit);
