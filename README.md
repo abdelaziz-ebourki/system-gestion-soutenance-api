@@ -1,5 +1,7 @@
 # Système de Gestion de Soutenances — API
 
+> ⚠️ **DEPRECATED** — Active development moved to the monorepo: [abdelaziz-ebourki/system-gestion-soutenance](https://github.com/abdelaziz-ebourki/system-gestion-soutenance) (`api/`). This repo is frozen at tag `v-final-pre-monorepo` and kept read-only for history.
+
 API RESTful pour la gestion des soutenances de projets de fin d'études.
 
 ---
